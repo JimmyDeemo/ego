@@ -7,23 +7,17 @@ public class PlayerInput : MonoBehaviour
     private float verticalMovement;
     private float horizontalMovement;
 
-    private GameObject shotPrefab;
-    private Bullet[] bullets;
+    public GameObject shotPrefab;
+    private GameObject[] bulletPool;
+
+    public const int MAX_BULLETS = 10;
 
 	// Use this for initialization
 	void Start ()
     {
         speed = 5.0f;
 
-        shotPrefab = (GameObject)Resources.Load("shotPrefab");
-
-        /*
-        bullets = new Bullet[20];
-        for (int bulletID = 0; bulletID < bullets.Length; bulletID++)
-        {
-            bullets[bulletID] = new Bullet();
-        }
-         */
+        bulletPool = new GameObject[MAX_BULLETS];
 	}
 	
 	// Update is called once per frame
@@ -37,8 +31,41 @@ public class PlayerInput : MonoBehaviour
         if ( Input.GetButtonDown("Fire1") )
         {
             print("FIRE!");
-            Instantiate(shotPrefab, transform.position, transform.rotation);
+            FireBullet();
         }
 	}
 
+    // Add the bullet to a pool for reuse
+    void FireBullet()
+    {
+        bool fired = false;
+        for (int bulletID = 0; bulletID < bulletPool.Length; bulletID++)
+        {
+            if (bulletPool[bulletID] != null)
+            {
+                if (bulletPool[bulletID].activeSelf == false)
+                {
+                    print("Bullet Found");
+                    bulletPool[bulletID].GetComponent<Bullet>().Reset(transform.position);
+                    fired = true;
+                    break;
+                }
+            }
+        }
+
+        if (!fired)
+        {
+            bool added = false;
+            for (int bulletID = 0; bulletID < bulletPool.Length; bulletID++)
+		    {
+		        if (bulletPool[bulletID] == null)
+                {
+                    print("Bullet added " + bulletID);
+                    bulletPool[bulletID] = (GameObject)Instantiate(shotPrefab, transform.position, transform.rotation);
+                    added = true;
+                    break;
+                }
+		    }
+        }
+    }
 }
