@@ -30,7 +30,6 @@ public class PlayerInput : MonoBehaviour
 
         if ( Input.GetButtonDown("Fire1") )
         {
-            print("FIRE!");
             FireBullet();
         }
 	}
@@ -54,14 +53,11 @@ public class PlayerInput : MonoBehaviour
 		//No free bullet
         if (!fired)
         {
-            bool added = false;
             for (int bulletID = 0; bulletID < bulletPool.Length; bulletID++)
 		    {
 		        if (bulletPool[bulletID] == null)
                 {
-                    print("Bullet added " + bulletID);
                     bulletPool[bulletID] = (GameObject)Instantiate(shotPrefab, transform.position, transform.rotation);
-                    added = true;
                     break;
                 }
 		    }
