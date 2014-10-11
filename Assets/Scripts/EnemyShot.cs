@@ -4,7 +4,7 @@ using System.Collections;
 public class EnemyShot : MonoBehaviour
 {
 		private Vector3 direction;
-		Vector3 Direction
+		public Vector3 Direction
 		{
 			set
 			{
@@ -17,12 +17,12 @@ public class EnemyShot : MonoBehaviour
 		// Use this for initialization
 		void Start ()
 		{
-				speed = 10.0f;
+				speed = 5.0f;
 		}
 	
 		// Update is called once per frame
 		void Update ()
 		{
-				transform.Translate (direction * speed);
+				transform.Translate (direction * (speed * Time.deltaTime));
 		}
 }
