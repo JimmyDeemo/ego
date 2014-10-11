@@ -146,7 +146,7 @@ PolygonCollider2D:
   m_GameObject: {fileID: 690060069}
   m_Enabled: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Poly:
     m_Paths:
     - - {x: .495000005, y: .125}
@@ -192,7 +192,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95f3f5d9b6821bf4b9bf218b23e66811, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyShot: {fileID: 0}
+  enemyShot: {fileID: 100000, guid: c15d7dd315229a04a92d1ed886762edc, type: 2}
   spawnPostion: {x: 0, y: 7, z: 0}
 --- !u!4 &1001072190
 Transform:
