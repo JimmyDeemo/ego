@@ -34,8 +34,7 @@ public class PlayerInput : MonoBehaviour
             FireBullet();
         }
 	}
-
-    // Add the bullet to a pool for reuse
+	
     void FireBullet()
     {
         bool fired = false;
@@ -45,7 +44,6 @@ public class PlayerInput : MonoBehaviour
             {
                 if (bulletPool[bulletID].activeSelf == false)
                 {
-                    print("Bullet Found");
                     bulletPool[bulletID].GetComponent<Bullet>().Reset(transform.position);
                     fired = true;
                     break;
@@ -53,6 +51,7 @@ public class PlayerInput : MonoBehaviour
             }
         }
 
+		//No free bullet
         if (!fired)
         {
             bool added = false;
