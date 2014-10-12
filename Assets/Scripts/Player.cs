@@ -9,6 +9,7 @@ public class Player : MonoBehaviour
 
     public GameObject shotPrefab;
     private GameObject[] bulletPool;
+	private float nextFireTime;
 
 	// Use this for initialization
 	void Start ()
@@ -16,6 +17,8 @@ public class Player : MonoBehaviour
         speed = 5.0f;
 
         bulletPool = new GameObject[GameSettings.PLAYER_BULLET_POOL_SIZE];
+
+		nextFireTime = Time.time + GameSettings.PLAYER_RATE_OF_FIRE;
 	}
 	
 	// Update is called once per frame
@@ -26,9 +29,10 @@ public class Player : MonoBehaviour
 
         transform.Translate(horizontalMovement, verticalMovement, 0.0f);
 
-        if ( Input.GetButtonDown("Fire1") )
+		if ( Input.GetButton("Fire1") && Time.time > nextFireTime )
         {
             FireBullet();
+			nextFireTime = Time.time + GameSettings.PLAYER_RATE_OF_FIRE;
         }
 	}
 	
