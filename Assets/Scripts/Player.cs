@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlayerInput : MonoBehaviour
+public class Player : MonoBehaviour
 {
     private float speed;
     private float verticalMovement;
