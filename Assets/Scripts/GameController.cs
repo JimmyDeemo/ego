@@ -26,6 +26,9 @@ public class GameController : MonoBehaviour
 	{
 		if (Time.time > nextSpawnTime)
 		{
+			GameObject newEnemy = (GameObject)Instantiate(enemyShot, spawnPostion, Quaternion.identity);
+			newEnemy.GetComponent<EnemyShot>().Direction = Vector3.down;
+
 			nextSpawnTime = Time.time + spawnFrequency;
 		}
 	}
