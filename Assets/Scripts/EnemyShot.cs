@@ -23,7 +23,18 @@ public class EnemyShot : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-			transform.Translate (direction * (speed * Time.deltaTime));
+		transform.Translate (direction * (speed * Time.deltaTime));
+
+		if (transform.position.y < -1.5)
+		{
+			gameObject.SetActive(false);
+		}
+	}
+
+	public void Reset(Vector3 startPosition)
+	{
+		transform.position = startPosition;
+		gameObject.SetActive(true);
 	}
 
 	void OnTriggerEnter2D(Collider2D coll)
