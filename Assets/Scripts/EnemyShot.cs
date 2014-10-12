@@ -24,11 +24,6 @@ public class EnemyShot : MonoBehaviour
 	void Update ()
 	{
 		transform.Translate (direction * (speed * Time.deltaTime));
-
-		if (transform.position.y < -1.5)
-		{
-			gameObject.SetActive(false);
-		}
 	}
 
 	public void Reset(Vector3 startPosition)
@@ -39,7 +34,7 @@ public class EnemyShot : MonoBehaviour
 
 	void OnTriggerEnter2D(Collider2D coll)
 	{
-		if (coll.gameObject.tag == "Player")
+		if (coll.gameObject.tag == "Player" || coll.gameObject.tag == "GameArea" )
 		{
 			return;
 		}
