@@ -4,12 +4,14 @@ using System.Collections;
 public class GameController : MonoBehaviour
 {
 	public GameObject enemyShot;
-	public Vector3 spawnPostion;
+	public Vector2 spawnPostionMin;
+	public Vector2 spawnPostionMax;
 
 	private float nextSpawnTime;
 	private float spawnFrequency; //In seconds.
 
 	private GameObject[] enemyBulletPool;
+
 
 	// Use this for initialization
 	void Start ()
@@ -32,8 +34,9 @@ public class GameController : MonoBehaviour
 			GameObject newEnemy = getBulletFromPool();
 			if (newEnemy != null)
 			{
-				newEnemy.GetComponent<EnemyShot>().Reset(spawnPostion);
-				newEnemy.GetComponent<EnemyShot>().Direction = Vector3.down;
+				//Spawn the enamy within the spawn area.
+				newEnemy.GetComponent<EnemyShot>().Reset( new Vector2( Random.Range(spawnPostionMin.x,spawnPostionMax.x), Random.Range(spawnPostionMin.y, spawnPostionMax.y)) );
+				newEnemy.GetComponent<EnemyShot>().Direction = -Vector2.up;
 			}
 
 			nextSpawnTime = Time.time + spawnFrequency;
