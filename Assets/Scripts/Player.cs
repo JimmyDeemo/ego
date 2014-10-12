@@ -10,14 +10,12 @@ public class Player : MonoBehaviour
     public GameObject shotPrefab;
     private GameObject[] bulletPool;
 
-    public const int MAX_BULLETS = 10;
-
 	// Use this for initialization
 	void Start ()
     {
         speed = 5.0f;
 
-        bulletPool = new GameObject[MAX_BULLETS];
+        bulletPool = new GameObject[GameSettings.PLAYER_BULLET_POOL_SIZE];
 	}
 	
 	// Update is called once per frame
@@ -36,7 +34,6 @@ public class Player : MonoBehaviour
 	
     void FireBullet()
     {
-        bool fired = false;
         for (int bulletID = 0; bulletID < bulletPool.Length; bulletID++)
         {
             if (bulletPool[bulletID] != null)
@@ -44,23 +41,21 @@ public class Player : MonoBehaviour
                 if (bulletPool[bulletID].activeSelf == false)
                 {
                     bulletPool[bulletID].GetComponent<Bullet>().Reset(transform.position);
-                    fired = true;
-                    break;
+                    return;
                 }
             }
         }
 
-		//No free bullet
-        if (!fired)
-        {
-            for (int bulletID = 0; bulletID < bulletPool.Length; bulletID++)
-		    {
-		        if (bulletPool[bulletID] == null)
-                {
-                    bulletPool[bulletID] = (GameObject)Instantiate(shotPrefab, transform.position, transform.rotation);
-                    break;
-                }
-		    }
-        }
+		//No free bullet, try to make one.
+        for (int bulletID = 0; bulletID < bulletPool.Length; bulletID++)
+	    {
+	        if (bulletPool[bulletID] == null)
+            {
+                bulletPool[bulletID] = (GameObject)Instantiate(shotPrefab, transform.position, transform.rotation);
+                return;
+            }
+	    }
+
+		Debug.LogWarning("Player bullet pool full!");
     }
 }
