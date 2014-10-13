@@ -56,10 +56,16 @@ public class Player : MonoBehaviour
 	        if (bulletPool[bulletID] == null)
             {
                 bulletPool[bulletID] = (GameObject)Instantiate(shotPrefab, transform.position, transform.rotation);
+				bulletPool[bulletID].GetComponent<Bullet>().onHitEvent += registerHit;
                 return;
             }
 	    }
 
 		Debug.LogWarning("Player bullet pool full!");
     }
+
+	void registerHit()
+	{
+		gameObject.transform.localScale *= GameSettings.PLAYER_SCALE_FACTOR;
+	}
 }

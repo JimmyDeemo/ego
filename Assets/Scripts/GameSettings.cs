@@ -6,6 +6,7 @@ public class GameSettings
 	#region Player Settings
 	public static float PLAYER_RATE_OF_FIRE = 0.1f; //In seconds.
 	public static int PLAYER_BULLET_POOL_SIZE = 15;
+	public static float PLAYER_SCALE_FACTOR = 1.005f;
 	#endregion
 
 	#region Enemy Settings
