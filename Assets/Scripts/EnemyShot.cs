@@ -9,7 +9,6 @@ public class EnemyShot : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-		speed = GameSettings.ENEMY_SPEED;
 	}
 
 	// Update is called once per frame
@@ -18,8 +17,9 @@ public class EnemyShot : MonoBehaviour
 		transform.Translate (direction * (speed * Time.deltaTime));
 	}
 
-	public void Reset(Vector2 startPosition, Vector2 targetPosition)
+	public void Reset(Vector2 startPosition, Vector2 targetPosition, float newSpeed)
 	{
+		speed = newSpeed;
 		transform.position = startPosition;
 		direction = targetPosition - startPosition;
 		direction.Normalize();
@@ -28,12 +28,10 @@ public class EnemyShot : MonoBehaviour
 
 	void OnTriggerEnter2D(Collider2D coll)
 	{
-		if (coll.gameObject.tag == "Player" || coll.gameObject.tag == "GameArea" )
+		if (coll.gameObject.tag == "PlayerBullet")
 		{
-			return;
+			coll.gameObject.SetActive(false);
+			Destroy(gameObject);
 		}
-
-		coll.gameObject.SetActive(false);
-		Destroy(gameObject);
 	}
 }
