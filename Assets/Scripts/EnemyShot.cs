@@ -30,7 +30,6 @@ public class EnemyShot : MonoBehaviour
 	{
 		if (coll.gameObject.tag == "PlayerBullet")
 		{
-			coll.gameObject.SetActive(false);
 			Destroy(gameObject);
 		}
 	}
