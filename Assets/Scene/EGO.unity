@@ -194,7 +194,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyShot: {fileID: 100000, guid: c15d7dd315229a04a92d1ed886762edc, type: 2}
   spawnPostionMin: {x: -4, y: 8.5}
-  spawnPostionMax: {x: 4, y: 5}
+  spawnPostionMax: {x: 4, y: 2}
+  playerRef: {fileID: 690060069}
 --- !u!4 &1001072190
 Transform:
   m_ObjectHideFlags: 0
@@ -202,7 +203,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1001072188}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 5.07538891, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
