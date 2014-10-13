@@ -18,12 +18,6 @@ public class Bullet : MonoBehaviour
         if (gameObject.activeSelf)
         {
             transform.Translate(0.0f, speed * Time.deltaTime, 0.0f);
-
-            //Kill if out of bounds.
-            if (transform.position.y > 9)
-            {
-                gameObject.SetActive(false);
-            }
         }
 	}
 

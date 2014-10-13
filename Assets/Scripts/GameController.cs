@@ -4,14 +4,19 @@ using System.Collections;
 public class GameController : MonoBehaviour
 {
 	public GameObject enemyShot;
-	public Vector3 spawnPostion;
+	public Vector2 spawnPostionMin;
+	public Vector2 spawnPostionMax;
 
 	private float nextSpawnTime;
 	private float spawnFrequency; //In seconds.
 
+	private GameObject[] enemyBulletPool;
+
+
 	// Use this for initialization
 	void Start ()
 	{
+		enemyBulletPool = new GameObject[GameSettings.ENEMY_BULLET_POOL_SIZE];
 		nextSpawnTime = Time.time;
 		spawnFrequency = 1;
 	}
@@ -26,10 +31,46 @@ public class GameController : MonoBehaviour
 	{
 		if (Time.time > nextSpawnTime)
 		{
-			GameObject newEnemy = (GameObject)Instantiate(enemyShot, spawnPostion, Quaternion.identity);
-			newEnemy.GetComponent<EnemyShot>().Direction = Vector3.down;
+			GameObject newEnemy = getBulletFromPool();
+			if (newEnemy != null)
+			{
+				//Spawn the enamy within the spawn area.
+				newEnemy.GetComponent<EnemyShot>().Reset( new Vector2( Random.Range(spawnPostionMin.x,spawnPostionMax.x), Random.Range(spawnPostionMin.y, spawnPostionMax.y)) );
+				newEnemy.GetComponent<EnemyShot>().Direction = -Vector2.up;
+			}
 
 			nextSpawnTime = Time.time + spawnFrequency;
 		}
+	}
+
+	GameObject getBulletFromPool()
+	{
+		bool fired = false;
+		for (int bulletID = 0; bulletID < enemyBulletPool.Length; bulletID++)
+		{
+			if (enemyBulletPool[bulletID] != null)
+			{
+				if (enemyBulletPool[bulletID].activeSelf == false)
+				{
+					return enemyBulletPool[bulletID];
+				}
+			}
+		}
+		
+		//No free bullet
+		if (!fired)
+		{
+			for (int bulletID = 0; bulletID < enemyBulletPool.Length; bulletID++)
+			{
+				if (enemyBulletPool[bulletID] == null)
+				{
+					enemyBulletPool[bulletID] = (GameObject)Instantiate(enemyShot, transform.position, Quaternion.identity);
+					return enemyBulletPool[bulletID];
+				}
+			}
+		}
+
+		Debug.LogWarning("Enemy bullet pool full!");
+		return null;
 	}
 }

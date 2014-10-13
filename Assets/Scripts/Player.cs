@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlayerInput : MonoBehaviour
+public class Player : MonoBehaviour
 {
     private float speed;
     private float verticalMovement;
@@ -9,15 +9,16 @@ public class PlayerInput : MonoBehaviour
 
     public GameObject shotPrefab;
     private GameObject[] bulletPool;
-
-    public const int MAX_BULLETS = 10;
+	private float nextFireTime;
 
 	// Use this for initialization
 	void Start ()
     {
         speed = 5.0f;
 
-        bulletPool = new GameObject[MAX_BULLETS];
+        bulletPool = new GameObject[GameSettings.PLAYER_BULLET_POOL_SIZE];
+
+		nextFireTime = Time.time + GameSettings.PLAYER_RATE_OF_FIRE;
 	}
 	
 	// Update is called once per frame
@@ -28,15 +29,15 @@ public class PlayerInput : MonoBehaviour
 
         transform.Translate(horizontalMovement, verticalMovement, 0.0f);
 
-        if ( Input.GetButtonDown("Fire1") )
+		if ( Input.GetButton("Fire1") && Time.time > nextFireTime )
         {
             FireBullet();
+			nextFireTime = Time.time + GameSettings.PLAYER_RATE_OF_FIRE;
         }
 	}
 	
     void FireBullet()
     {
-        bool fired = false;
         for (int bulletID = 0; bulletID < bulletPool.Length; bulletID++)
         {
             if (bulletPool[bulletID] != null)
@@ -44,23 +45,21 @@ public class PlayerInput : MonoBehaviour
                 if (bulletPool[bulletID].activeSelf == false)
                 {
                     bulletPool[bulletID].GetComponent<Bullet>().Reset(transform.position);
-                    fired = true;
-                    break;
+                    return;
                 }
             }
         }
 
-		//No free bullet
-        if (!fired)
-        {
-            for (int bulletID = 0; bulletID < bulletPool.Length; bulletID++)
-		    {
-		        if (bulletPool[bulletID] == null)
-                {
-                    bulletPool[bulletID] = (GameObject)Instantiate(shotPrefab, transform.position, transform.rotation);
-                    break;
-                }
-		    }
-        }
+		//No free bullet, try to make one.
+        for (int bulletID = 0; bulletID < bulletPool.Length; bulletID++)
+	    {
+	        if (bulletPool[bulletID] == null)
+            {
+                bulletPool[bulletID] = (GameObject)Instantiate(shotPrefab, transform.position, transform.rotation);
+                return;
+            }
+	    }
+
+		Debug.LogWarning("Player bullet pool full!");
     }
 }

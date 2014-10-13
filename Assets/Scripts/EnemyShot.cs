@@ -23,12 +23,18 @@ public class EnemyShot : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-			transform.Translate (direction * (speed * Time.deltaTime));
+		transform.Translate (direction * (speed * Time.deltaTime));
+	}
+
+	public void Reset(Vector3 startPosition)
+	{
+		transform.position = startPosition;
+		gameObject.SetActive(true);
 	}
 
 	void OnTriggerEnter2D(Collider2D coll)
 	{
-		if (coll.gameObject.tag == "Player")
+		if (coll.gameObject.tag == "Player" || coll.gameObject.tag == "GameArea" )
 		{
 			return;
 		}
