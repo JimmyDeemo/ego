@@ -4,20 +4,12 @@ using System.Collections;
 public class EnemyShot : MonoBehaviour
 {
 	private Vector3 direction;
-	public Vector3 Direction
-	{
-		set
-		{
-			direction = value.normalized;
-		}
-	}
-
 	private float speed;
 
 	// Use this for initialization
 	void Start ()
 	{
-			speed = 5.0f;
+		speed = GameSettings.ENEMY_SPEED;
 	}
 
 	// Update is called once per frame
@@ -26,9 +18,11 @@ public class EnemyShot : MonoBehaviour
 		transform.Translate (direction * (speed * Time.deltaTime));
 	}
 
-	public void Reset(Vector3 startPosition)
+	public void Reset(Vector2 startPosition, Vector2 targetPosition)
 	{
 		transform.position = startPosition;
+		direction = targetPosition - startPosition;
+		direction.Normalize();
 		gameObject.SetActive(true);
 	}
 
