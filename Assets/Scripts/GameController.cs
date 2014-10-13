@@ -10,7 +10,6 @@ public class GameController : MonoBehaviour
 	public GameObject playerRef;
 
 	private float nextSpawnTime;
-	private float spawnFrequency; //In seconds.
 
 	private GameObject[] enemyBulletPool;
 
@@ -20,7 +19,6 @@ public class GameController : MonoBehaviour
 	{
 		enemyBulletPool = new GameObject[GameSettings.ENEMY_BULLET_POOL_SIZE];
 		nextSpawnTime = Time.time;
-		spawnFrequency = 1;
 	}
 	
 	// Update is called once per frame
@@ -40,47 +38,92 @@ public class GameController : MonoBehaviour
 	{
 		if (Time.time > nextSpawnTime)
 		{
-			GameObject newEnemy = getBulletFromPool();
-			if (newEnemy != null)
-			{
-				//Spawn the enamy within the spawn area.
-				newEnemy.GetComponent<EnemyShot>().Reset(new Vector2( Random.Range(spawnPostionMin.x,spawnPostionMax.x), Random.Range(spawnPostionMin.y, spawnPostionMax.y)),
-				                                         playerRef.transform.position
-				                                         );
-			}
+			SpawnCluster("shotgun");
 
-			nextSpawnTime = Time.time + spawnFrequency;
+			nextSpawnTime = Time.time + Random.Range(GameSettings.ENEMY_RATE_OF_SPAWN_MIN, GameSettings.ENEMY_RATE_OF_SPAWN_MAX);
 		}
 	}
 
-	GameObject getBulletFromPool()
+	/// <summary>
+	/// Spawns a cluster of enemies dependant on type.
+	/// 
+	/// </summary>
+	/// <param name="typeID"></param>
+	void SpawnCluster( string typeID )
 	{
-		bool fired = false;
+		switch (typeID)
+		{
+			//Bunch of shots that spread outwards like a shot gun.
+			case "shotgun":
+				GameObject[] bulletsToSpawn = requestBulletsFromPool(10);
+				Vector2 spawnCenter = new Vector2( Random.Range(spawnPostionMin.x,spawnPostionMax.x), Random.Range(spawnPostionMin.y, spawnPostionMax.y));
+				Vector3 playerPosition = playerRef.transform.position;
+				foreach (var spawn in bulletsToSpawn)
+				{
+					if (spawn != null)
+					{
+						//From center point, targetted slightly to the left or right of the player.
+						spawn.GetComponent<EnemyShot>().Reset( spawnCenter,
+						                                      new Vector2( Random.Range(playerPosition.x - GameSettings.SHOTGUN_SPREAD, playerPosition.x + GameSettings.SHOTGUN_SPREAD), playerPosition.y ),
+						                                      Random.Range(GameSettings.ENEMY_SPEED_MIN, GameSettings.ENEMY_SPEED_MAX)
+						            						);
+					}
+				}
+				break;
+
+			default:
+				break;
+		}
+	}
+
+	GameObject[] requestBulletsFromPool(int numberOfBullets)
+	{
+		//Lets clamp so we know that we always need at least one.
+		if (numberOfBullets <= 0)
+		{
+			numberOfBullets = 1;
+		}
+
+		GameObject[] bulletAllocation = new GameObject[numberOfBullets];
+		int numberAllocated = 0;
+
 		for (int bulletID = 0; bulletID < enemyBulletPool.Length; bulletID++)
 		{
 			if (enemyBulletPool[bulletID] != null)
 			{
 				if (enemyBulletPool[bulletID].activeSelf == false)
 				{
-					return enemyBulletPool[bulletID];
+					bulletAllocation[numberAllocated++] = enemyBulletPool[bulletID];
+					if (numberAllocated == numberOfBullets)
+					{
+						break;
+					}
 				}
 			}
 		}
-		
-		//No free bullet
-		if (!fired)
+
+		//Enough?
+		if (numberAllocated == numberOfBullets)
 		{
-			for (int bulletID = 0; bulletID < enemyBulletPool.Length; bulletID++)
+			return bulletAllocation;
+		}
+
+		//Need to create the rest.
+		for (int bulletID = 0; bulletID < enemyBulletPool.Length; bulletID++)
+		{
+			if (enemyBulletPool[bulletID] == null)
 			{
-				if (enemyBulletPool[bulletID] == null)
+				enemyBulletPool[bulletID] = (GameObject)Instantiate(enemyShot, transform.position, Quaternion.identity);
+				bulletAllocation[numberAllocated++] = enemyBulletPool[bulletID];
+				if (numberAllocated == numberOfBullets)
 				{
-					enemyBulletPool[bulletID] = (GameObject)Instantiate(enemyShot, transform.position, Quaternion.identity);
-					return enemyBulletPool[bulletID];
+					return bulletAllocation;
 				}
 			}
 		}
 
 		Debug.LogWarning("Enemy bullet pool full!");
-		return null;
+		//Return what we've got.
+		return bulletAllocation;
 	}
 }
