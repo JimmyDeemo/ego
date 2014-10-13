@@ -7,6 +7,8 @@ public class GameController : MonoBehaviour
 	public Vector2 spawnPostionMin;
 	public Vector2 spawnPostionMax;
 
+	public GameObject playerRef;
+
 	private float nextSpawnTime;
 	private float spawnFrequency; //In seconds.
 
@@ -24,6 +26,13 @@ public class GameController : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
+		//Quit?
+		if ( Input.GetKeyDown(KeyCode.Escape) )
+		{
+			Application.Quit();
+			return;
+		}
+
 		SpawnEnemies();
 	}
 
@@ -35,8 +44,9 @@ public class GameController : MonoBehaviour
 			if (newEnemy != null)
 			{
 				//Spawn the enamy within the spawn area.
-				newEnemy.GetComponent<EnemyShot>().Reset( new Vector2( Random.Range(spawnPostionMin.x,spawnPostionMax.x), Random.Range(spawnPostionMin.y, spawnPostionMax.y)) );
-				newEnemy.GetComponent<EnemyShot>().Direction = -Vector2.up;
+				newEnemy.GetComponent<EnemyShot>().Reset(new Vector2( Random.Range(spawnPostionMin.x,spawnPostionMax.x), Random.Range(spawnPostionMin.y, spawnPostionMax.y)),
+				                                         playerRef.transform.position
+				                                         );
 			}
 
 			nextSpawnTime = Time.time + spawnFrequency;
