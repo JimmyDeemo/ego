@@ -11,5 +11,6 @@ public class GameSettings
 	#region Enemy Settings
 	public static int ENEMY_BULLET_POOL_SIZE = 100;
 	public static float ENEMY_RATE_OF_SPAWN = 0.2f; //In seconds.
+	public static float ENEMY_SPEED = 5.0f;
 	#endregion
 }
