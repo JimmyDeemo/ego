@@ -32,9 +32,11 @@ public class Bullet : MonoBehaviour
 
 	void OnTriggerEnter2D(Collider2D coll)
 	{
-		if (coll.gameObject.tag == "EnemyBullet")
+		if (coll.tag == "EnemyBullet")
 		{
 			gameObject.SetActive(false);
+			coll.gameObject.SetActive(false);
+
 			if (onHitEvent != null)
 			{
 				onHitEvent();

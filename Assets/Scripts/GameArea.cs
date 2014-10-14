@@ -3,12 +3,12 @@ using System.Collections;
 
 public class GameArea : MonoBehaviour
 {
-	void OnTriggerExit2D(Collider2D other)
+	void OnTriggerExit2D(Collider2D coll)
 	{
 		//Identify those that need destroying or 
-		if (other.gameObject.tag == "PlayerBullet" || other.gameObject.tag == "EnemyBullet")
+		if (coll.gameObject.tag == "PlayerBullet" || coll.gameObject.tag == "EnemyBullet")
 		{
-			other.gameObject.SetActive(false);
+			coll.gameObject.SetActive(false);
 		}
 	}
 }

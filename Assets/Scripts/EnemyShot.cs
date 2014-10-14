@@ -28,9 +28,9 @@ public class EnemyShot : MonoBehaviour
 
 	void OnTriggerEnter2D(Collider2D coll)
 	{
-		if (coll.gameObject.tag == "PlayerBullet")
+		if (coll.tag == "Player")
 		{
-			Destroy(gameObject);
+			coll.gameObject.SetActive(false);
 		}
 	}
 }
