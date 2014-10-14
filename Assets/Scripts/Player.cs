@@ -22,12 +22,18 @@ public class Player : MonoBehaviour
 	}
 	
 	// Update is called once per frame
-	void Update ()
+    private void Update()
     {
         verticalMovement = Input.GetAxis("Vertical") * speed * Time.deltaTime;
         horizontalMovement = Input.GetAxis("Horizontal") * speed * Time.deltaTime;
 
         transform.Translate(horizontalMovement, verticalMovement, 0.0f);
+
+		//Clamp to the screen.
+		Vector3 playerScreenPosition = Camera.main.WorldToScreenPoint( transform.position );
+		playerScreenPosition.x = Mathf.Clamp(playerScreenPosition.x, 0, Screen.width);
+		playerScreenPosition.y = Mathf.Clamp(playerScreenPosition.y, 0, Screen.height);
+		transform.position = Camera.main.ScreenToWorldPoint(playerScreenPosition);
 
 		if ( Input.GetButton("Fire1") && Time.time > nextFireTime )
         {
