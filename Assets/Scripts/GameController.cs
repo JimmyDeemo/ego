@@ -20,16 +20,41 @@ public class GameController : MonoBehaviour
 		enemyBulletPool = new GameObject[GameSettings.ENEMY_BULLET_POOL_SIZE];
 		nextSpawnTime = Time.time;
 	}
+
+    void ResetGame()
+    {
+        playerRef.GetComponent<Player>().Reset();
+
+        //No need to destroy objects in the pool. Just set them as inactive.
+        foreach (var enemy in enemyBulletPool)
+        {
+            if (enemy != null)
+            {
+                enemy.SetActive(false);
+            }
+        }
+    }
 	
 	// Update is called once per frame
 	void Update ()
 	{
-		//Quit?
+        //Quit?
 		if ( Input.GetKeyDown(KeyCode.Escape) )
 		{
 			Application.Quit();
 			return;
 		}
+
+        if (playerRef.activeSelf)
+        {
+        }
+		else
+        {
+            if ( Input.GetKeyDown(KeyCode.R) )
+            {
+                ResetGame();
+            }
+        }
 
 		SpawnEnemies();
 	}

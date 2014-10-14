@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Script attached to the Player GameObject. Handles player movement and fireing.
+/// </summary>
 public class Player : MonoBehaviour
 {
     private float speed;
@@ -11,14 +14,38 @@ public class Player : MonoBehaviour
     private GameObject[] bulletPool;
 	private float nextFireTime;
 
+    private Vector3 spawnPosition;
+    private Vector3 spawnScale;
+
 	// Use this for initialization
-	void Start ()
+	private void Start ()
     {
         speed = 5.0f;
 
         bulletPool = new GameObject[GameSettings.PLAYER_BULLET_POOL_SIZE];
 
 		nextFireTime = Time.time + GameSettings.PLAYER_RATE_OF_FIRE;
+
+        //Could hard code these but take them from the scene view in case they get
+        //modified there.
+		spawnPosition = transform.position;
+        spawnScale = transform.localScale;
+	}
+
+	public void Reset()
+	{
+        transform.position = spawnPosition;
+        transform.localScale = spawnScale;
+
+        foreach (var bullet in bulletPool)
+        {
+            if (bullet != null)
+            {
+                bullet.SetActive(false);
+            }
+        }
+
+        gameObject.SetActive(true);
 	}
 	
 	// Update is called once per frame
@@ -41,8 +68,8 @@ public class Player : MonoBehaviour
 			nextFireTime = Time.time + GameSettings.PLAYER_RATE_OF_FIRE;
         }
 	}
-	
-    void FireBullet()
+
+    private void FireBullet()
     {
         for (int bulletID = 0; bulletID < bulletPool.Length; bulletID++)
         {
