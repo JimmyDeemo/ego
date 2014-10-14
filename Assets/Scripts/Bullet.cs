@@ -3,6 +3,9 @@ using System.Collections;
 
 public class Bullet : MonoBehaviour
 {
+	public delegate void OnHit();
+	public event OnHit onHitEvent;
+
     private float speed;
 
 	// Use this for initialization
@@ -26,4 +29,18 @@ public class Bullet : MonoBehaviour
         transform.position = startPosition;
         gameObject.SetActive(true);
     }
+
+	void OnTriggerEnter2D(Collider2D coll)
+	{
+		if (coll.tag == "EnemyBullet")
+		{
+			gameObject.SetActive(false);
+			coll.gameObject.SetActive(false);
+
+			if (onHitEvent != null)
+			{
+				onHitEvent();
+			}
+		}
+	}
 }
