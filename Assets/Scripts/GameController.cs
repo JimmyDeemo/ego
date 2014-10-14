@@ -8,6 +8,10 @@ public class GameController : MonoBehaviour
 	public Vector2 spawnPostionMax;
 
 	public GameObject playerRef;
+    public GameObject logoRef;
+	public GameObject scoreRef;
+
+	private int score;
 
 	private float nextSpawnTime;
 
@@ -19,10 +23,15 @@ public class GameController : MonoBehaviour
 	{
 		enemyBulletPool = new GameObject[GameSettings.ENEMY_BULLET_POOL_SIZE];
 		nextSpawnTime = Time.time;
+
+        //Start the player dead and the logo visible.
+        playerRef.SetActive(false);
+		playerRef.GetComponent<Player>().onRegisterHit += ScoreHit;
 	}
 
     void ResetGame()
     {
+		score = 0;
         playerRef.GetComponent<Player>().Reset();
 
         //No need to destroy objects in the pool. Just set them as inactive.
@@ -47,9 +56,17 @@ public class GameController : MonoBehaviour
 
         if (playerRef.activeSelf)
         {
+
+            logoRef.renderer.enabled = false;
+			scoreRef.SetActive(true);
+
+			scoreRef.GetComponent<GUIText>().text = score.ToString();
         }
 		else
         {
+            logoRef.renderer.enabled = true;
+			scoreRef.SetActive(false);
+
             if ( Input.GetKeyDown(KeyCode.R) )
             {
                 ResetGame();
@@ -150,5 +167,10 @@ public class GameController : MonoBehaviour
 		Debug.LogWarning("Enemy bullet pool full!");
 		//Return what we've got.
 		return bulletAllocation;
+	}
+
+	void ScoreHit()
+	{
+		score++;
 	}
 }
