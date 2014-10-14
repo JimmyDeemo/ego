@@ -6,6 +6,9 @@ using System.Collections;
 /// </summary>
 public class Player : MonoBehaviour
 {
+	public delegate void OnHit();
+	public event OnHit onRegisterHit;
+
     private float speed;
     private float verticalMovement;
     private float horizontalMovement;
@@ -64,20 +67,23 @@ public class Player : MonoBehaviour
 
 		if ( Input.GetButton("Fire1") && Time.time > nextFireTime )
         {
-            FireBullet();
+            FireBullet(GameSettings.GUN_SEPARATION);
+			FireBullet(-GameSettings.GUN_SEPARATION);
 			nextFireTime = Time.time + GameSettings.PLAYER_RATE_OF_FIRE;
         }
 	}
 
-    private void FireBullet()
+    private void FireBullet(float positionOffset)
     {
+		Vector3 firePosition = transform.position;
+		firePosition.x += positionOffset;
         for (int bulletID = 0; bulletID < bulletPool.Length; bulletID++)
         {
             if (bulletPool[bulletID] != null)
             {
                 if (bulletPool[bulletID].activeSelf == false)
                 {
-                    bulletPool[bulletID].GetComponent<Bullet>().Reset(transform.position);
+					bulletPool[bulletID].GetComponent<Bullet>().Reset(firePosition);
                     return;
                 }
             }
@@ -88,7 +94,7 @@ public class Player : MonoBehaviour
 	    {
 	        if (bulletPool[bulletID] == null)
             {
-                bulletPool[bulletID] = (GameObject)Instantiate(shotPrefab, transform.position, transform.rotation);
+				bulletPool[bulletID] = (GameObject)Instantiate(shotPrefab, firePosition, transform.rotation);
 				bulletPool[bulletID].GetComponent<Bullet>().onHitEvent += registerHit;
                 return;
             }
@@ -100,5 +106,7 @@ public class Player : MonoBehaviour
     private void registerHit()
 	{
 		gameObject.transform.localScale *= GameSettings.PLAYER_SCALE_FACTOR;
+
+		onRegisterHit();
 	}
 }
