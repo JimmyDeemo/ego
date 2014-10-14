@@ -70,7 +70,15 @@ public class Player : MonoBehaviour
 		Debug.LogWarning("Player bullet pool full!");
     }
 
-	void registerHit()
+    private void OnTriggerEnter2D(Collider2D coll)
+    {
+        if (coll.gameObject.tag == "EnemyBullet")
+        {
+            gameObject.SetActive(false);
+        }
+    }
+
+    private void registerHit()
 	{
 		gameObject.transform.localScale *= GameSettings.PLAYER_SCALE_FACTOR;
 	}
