@@ -8,6 +8,7 @@ public class GameController : MonoBehaviour
 	public Vector2 spawnPostionMax;
 
 	public GameObject playerRef;
+	public Transform playerTransform;
     public GameObject logoRef;
 	public GameObject scoreRef;
 
@@ -23,6 +24,8 @@ public class GameController : MonoBehaviour
 	{
 		enemyBulletPool = new GameObject[GameSettings.ENEMY_BULLET_POOL_SIZE];
 		nextSpawnTime = Time.time;
+
+		playerTransform = playerRef.transform;
 
         //Start the player dead and the logo visible.
         playerRef.SetActive(false);
@@ -80,7 +83,14 @@ public class GameController : MonoBehaviour
 	{
 		if (Time.time > nextSpawnTime)
 		{
-			SpawnCluster("shotgun");
+			if (Random.value <= GameSettings.SHOTGUN_CHANCE)
+			{
+				SpawnCluster("shotgun");
+			}
+			else
+			{
+				SpawnCluster("pulse");
+			}
 
 			nextSpawnTime = Time.time + Random.Range(GameSettings.ENEMY_RATE_OF_SPAWN_MIN, GameSettings.ENEMY_RATE_OF_SPAWN_MAX);
 		}
@@ -93,23 +103,53 @@ public class GameController : MonoBehaviour
 	/// <param name="typeID"></param>
 	void SpawnCluster( string typeID )
 	{
+		GameObject[] bulletsToSpawn;
+		Vector2 spawnCenter = new Vector2( Random.Range(spawnPostionMin.x,spawnPostionMax.x), Random.Range(spawnPostionMin.y, spawnPostionMax.y));
+		Vector2 fireDirection;
+
 		switch (typeID)
 		{
 			//Bunch of shots that spread outwards like a shot gun.
 			case "shotgun":
-				GameObject[] bulletsToSpawn = requestBulletsFromPool(10);
-				Vector2 spawnCenter = new Vector2( Random.Range(spawnPostionMin.x,spawnPostionMax.x), Random.Range(spawnPostionMin.y, spawnPostionMax.y));
-				Vector3 playerPosition = playerRef.transform.position;
+				bulletsToSpawn = requestBulletsFromPool(10);
+
+				foreach (var spawn in bulletsToSpawn)
+				{
+					if (spawn != null)
+					{
+						fireDirection = new Vector2( Random.Range(playerTransform.position.x - GameSettings.SHOTGUN_SPREAD, playerTransform.position.x + GameSettings.SHOTGUN_SPREAD), playerTransform.position.y );
+						fireDirection = fireDirection - spawnCenter;
+						fireDirection.Normalize();
+						//From center point, targetted slightly to the left or right of the player.
+						spawn.GetComponent<EnemyShot>().Reset( spawnCenter,
+						                                      fireDirection,
+						                                      Random.Range(GameSettings.ENEMY_SPEED_MIN, GameSettings.ENEMY_SPEED_MAX)
+						            						);
+					}
+				}
+				break;
+
+			case "pulse":
+				int numShotsInPulse = 9;
+				bulletsToSpawn = requestBulletsFromPool(numShotsInPulse);
+				fireDirection = -Vector2.up;
+				float degreesPerShot = GameSettings.PULSE_SPREAD / (numShotsInPulse - 1);
+				Quaternion tempRotation = Quaternion.AngleAxis( -GameSettings.PULSE_SPREAD * 0.5f, Vector3.forward ); //Creates a rotation around the vector that is facing the camera.
+				fireDirection = tempRotation * fireDirection; //Star point of the arc shaped pulse.
+				tempRotation = Quaternion.AngleAxis( degreesPerShot, Vector3.forward ); //Rotation to alter each time.
+
 				foreach (var spawn in bulletsToSpawn)
 				{
 					if (spawn != null)
 					{
 						//From center point, targetted slightly to the left or right of the player.
 						spawn.GetComponent<EnemyShot>().Reset( spawnCenter,
-						                                      new Vector2( Random.Range(playerPosition.x - GameSettings.SHOTGUN_SPREAD, playerPosition.x + GameSettings.SHOTGUN_SPREAD), playerPosition.y ),
-						                                      Random.Range(GameSettings.ENEMY_SPEED_MIN, GameSettings.ENEMY_SPEED_MAX)
-						            						);
+						                                      fireDirection,
+						                                      GameSettings.ENEMY_SPEED_MIN
+						                                      );
 					}
+
+					fireDirection = tempRotation * fireDirection;
 				}
 				break;
 

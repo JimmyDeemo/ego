@@ -17,12 +17,17 @@ public class EnemyShot : MonoBehaviour
 		transform.Translate (direction * (speed * Time.deltaTime));
 	}
 
-	public void Reset(Vector2 startPosition, Vector2 targetPosition, float newSpeed)
+	/// <summary>
+	/// Resets the object with a new start position, direction and speed.
+	/// </summary>
+	/// <param name="startPosition">Start position.</param>
+	/// <param name="newDirection">New direction. Note: Function assumes that this is a unit vector.</param>
+	/// <param name="newSpeed">New speed.</param>
+	public void Reset(Vector2 startPosition, Vector2 newDirection, float newSpeed)
 	{
 		speed = newSpeed;
 		transform.position = startPosition;
-		direction = targetPosition - startPosition;
-		direction.Normalize();
+		direction = newDirection;
 		gameObject.SetActive(true);
 	}
 
