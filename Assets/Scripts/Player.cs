@@ -48,17 +48,24 @@ public class Player : MonoBehaviour
 
 		nextFireTime = Time.time + GameSettings.PLAYER_RATE_OF_FIRE;
 
+		SetShieldActive(true);
+
         //Could hard code these but take them from the scene view in case they get
         //modified there.
 		spawnPosition = transform.position;
         spawnScale = transform.localScale;
 	}
 
+	/// <summary>
+	/// Resets the player ready for a new game.
+	/// Sets the game object to active at the end effectively begins the new games.
+	/// </summary>
 	public void Reset()
 	{
         transform.position = spawnPosition;
         transform.localScale = spawnScale;
 
+		//Unlikely that bullets would still be active but just in case.
         foreach (var bullet in bulletPool)
         {
             if (bullet != null)
@@ -67,12 +74,22 @@ public class Player : MonoBehaviour
             }
         }
 
+		SetShieldActive(true);
+
         gameObject.SetActive(true);
 	}
 	
 	// Update is called once per frame
     private void Update()
     {
+		if (!shieldActive)
+		{
+			if (Time.time >= shieldReactivateTime)
+			{
+				SetShieldActive(true);
+			}
+		}
+
         verticalMovement = Input.GetAxis("Vertical") * speed * Time.deltaTime;
         horizontalMovement = Input.GetAxis("Horizontal") * speed * Time.deltaTime;
 
@@ -114,7 +131,7 @@ public class Player : MonoBehaviour
 	        if (bulletPool[bulletID] == null)
             {
 				bulletPool[bulletID] = (GameObject)Instantiate(shotPrefab, firePosition, transform.rotation);
-				bulletPool[bulletID].GetComponent<Bullet>().onHitEvent += registerHit;
+				bulletPool[bulletID].GetComponent<Bullet>().onHitEvent += RegisterHit;
                 return;
             }
 	    }

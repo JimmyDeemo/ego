@@ -8,6 +8,7 @@ public class GameSettings
 	public static int PLAYER_BULLET_POOL_SIZE = 40;
 	public static float PLAYER_SCALE_FACTOR = 1.0015f; //1.0025f
 	public static float GUN_SEPARATION = 0.3f;
+	public static float SHIELD_RECHARGE_TIME = 4.0f; //In seconds.
 	#endregion
 
 	#region Enemy Settings
