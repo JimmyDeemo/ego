@@ -20,6 +20,25 @@ public class Player : MonoBehaviour
     private Vector3 spawnPosition;
     private Vector3 spawnScale;
 
+	private bool shieldActive;
+	public bool ShieldActive
+	{
+		get
+		{
+			return this.shieldActive;
+		}
+	}
+
+	private float shieldReactivateTime;
+	public float ShieldReactivateTime
+	{
+		get
+		{
+			return this.shieldReactivateTime;
+		}
+	}
+
+
 	// Use this for initialization
 	private void Start ()
     {
@@ -103,7 +122,35 @@ public class Player : MonoBehaviour
 		Debug.LogWarning("Player bullet pool full!");
     }
 
-    private void registerHit()
+	private void OnTriggerEnter2D(Collider2D coll)
+	{
+		if (coll.tag == "EnemyBullet")
+		{
+			if (shieldActive)
+			{
+				SetShieldActive(false);
+				coll.gameObject.SetActive(false);
+			}
+			else
+			{
+				gameObject.SetActive(false);
+			}
+		}
+	}
+
+	private void SetShieldActive( bool isActive )
+	{
+		shieldActive = isActive;
+		transform.Find("Shield").gameObject.SetActive(isActive);
+
+		if (!isActive)
+		{
+			shieldDeactivationTime = Time.time;
+			shieldReactivateTime = shieldDeactivationTime + GameSettings.SHIELD_RECHARGE_TIME;
+		}
+	}
+
+    private void RegisterHit()
 	{
 		gameObject.transform.localScale *= GameSettings.PLAYER_SCALE_FACTOR;
 
