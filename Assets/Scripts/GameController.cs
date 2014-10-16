@@ -9,8 +9,12 @@ public class GameController : MonoBehaviour
 
 	public GameObject playerRef;
 	public Transform playerTransform;
+	public Player playerScript;
     public GameObject logoRef;
 	public GameObject scoreRef;
+	public GameObject shieldMeterRef;
+
+	public Vector3 shieldMeterFullSize;
 
 	private int score;
 
@@ -26,10 +30,13 @@ public class GameController : MonoBehaviour
 		nextSpawnTime = Time.time;
 
 		playerTransform = playerRef.transform;
+		playerScript = playerRef.GetComponent<Player>();
 
         //Start the player dead and the logo visible.
         playerRef.SetActive(false);
 		playerRef.GetComponent<Player>().onRegisterHit += ScoreHit;
+
+		shieldMeterFullSize = shieldMeterRef.transform.localScale;
 	}
 
     void ResetGame()
@@ -59,9 +66,21 @@ public class GameController : MonoBehaviour
 
         if (playerRef.activeSelf)
         {
-
+			//TODO: Optimize this to not set each frame.
             logoRef.renderer.enabled = false;
 			scoreRef.SetActive(true);
+
+			if (!playerScript.ShieldActive)
+			{
+				float ratio = Time.time / playerScript.ShieldReactivateTime;
+				shieldMeterRef.transform.localScale.Set(shieldMeterFullSize.x, shieldMeterFullSize.y * ratio, shieldMeterFullSize.z);
+				shieldMeterRef.renderer.material.color = new Color( 1.0f - ratio, ratio, 0);
+			}
+			else
+			{
+				shieldMeterRef.transform.localScale = shieldMeterFullSize;
+				shieldMeterRef.renderer.material.color = Color.cyan;
+			}
 
 			scoreRef.GetComponent<GUIText>().text = score.ToString();
         }
@@ -111,7 +130,7 @@ public class GameController : MonoBehaviour
 		{
 			//Bunch of shots that spread outwards like a shot gun.
 			case "shotgun":
-				bulletsToSpawn = requestBulletsFromPool(10);
+				bulletsToSpawn = RequestBulletsFromPool(10);
 
 				foreach (var spawn in bulletsToSpawn)
 				{
@@ -131,7 +150,7 @@ public class GameController : MonoBehaviour
 
 			case "pulse":
 				int numShotsInPulse = 9;
-				bulletsToSpawn = requestBulletsFromPool(numShotsInPulse);
+				bulletsToSpawn = RequestBulletsFromPool(numShotsInPulse);
 				fireDirection = -Vector2.up;
 				float degreesPerShot = GameSettings.PULSE_SPREAD / (numShotsInPulse - 1);
 				Quaternion tempRotation = Quaternion.AngleAxis( -GameSettings.PULSE_SPREAD * 0.5f, Vector3.forward ); //Creates a rotation around the vector that is facing the camera.
@@ -158,7 +177,7 @@ public class GameController : MonoBehaviour
 		}
 	}
 
-	GameObject[] requestBulletsFromPool(int numberOfBullets)
+	GameObject[] RequestBulletsFromPool(int numberOfBullets)
 	{
 		//Lets clamp so we know that we always need at least one.
 		if (numberOfBullets <= 0)
