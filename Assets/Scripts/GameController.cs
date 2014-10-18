@@ -15,6 +15,7 @@ public class GameController : MonoBehaviour
 	public GameObject shieldMeterRef;
 
 	public Vector3 shieldMeterFullSize;
+	public Vector3 shieldMeterDefaultPosition;
 
 	private int score;
 
@@ -37,6 +38,7 @@ public class GameController : MonoBehaviour
 		playerRef.GetComponent<Player>().onRegisterHit += ScoreHit;
 
 		shieldMeterFullSize = shieldMeterRef.transform.localScale;
+		shieldMeterDefaultPosition = shieldMeterRef.transform.position;
 	}
 
     void ResetGame()
@@ -72,14 +74,18 @@ public class GameController : MonoBehaviour
 
 			if (!playerScript.ShieldActive)
 			{
-				float ratio = Time.time / playerScript.ShieldReactivateTime;
-				shieldMeterRef.transform.localScale.Set(shieldMeterFullSize.x, shieldMeterFullSize.y * ratio, shieldMeterFullSize.z);
-				shieldMeterRef.renderer.material.color = new Color( 1.0f - ratio, ratio, 0);
+				float ratio = (Time.time - playerScript.ShieldDeactivateTime) / (playerScript.ShieldReactivateTime - playerScript.ShieldDeactivateTime);
+				shieldMeterRef.transform.localScale =  new Vector3( shieldMeterFullSize.x * ratio, shieldMeterFullSize.y, shieldMeterFullSize.z );
+				shieldMeterRef.transform.position = new Vector3(shieldMeterDefaultPosition.x + (shieldMeterRef.transform.localScale.x * 0.5f) - (shieldMeterFullSize.x * 0.5f),
+				                                                shieldMeterDefaultPosition.y,
+				                                                shieldMeterDefaultPosition.z
+				                                                );
+				shieldMeterRef.renderer.material.color = new Color( 1.0f, 0.0f, 0.0f);
 			}
 			else
 			{
 				shieldMeterRef.transform.localScale = shieldMeterFullSize;
-				shieldMeterRef.renderer.material.color = Color.cyan;
+				shieldMeterRef.renderer.material.color = new Color( 0.0f, 1.0f, 0.0f);
 			}
 
 			scoreRef.GetComponent<GUIText>().text = score.ToString();

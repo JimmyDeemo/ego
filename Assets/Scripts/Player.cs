@@ -38,6 +38,14 @@ public class Player : MonoBehaviour
 		}
 	}
 
+	public float ShieldDeactivateTime
+	{
+		get
+		{
+			return this.shieldReactivateTime - GameSettings.SHIELD_RECHARGE_TIME;
+		}
+	}
+
 
 	// Use this for initialization
 	private void Start ()
@@ -162,8 +170,7 @@ public class Player : MonoBehaviour
 
 		if (!isActive)
 		{
-			shieldDeactivationTime = Time.time;
-			shieldReactivateTime = shieldDeactivationTime + GameSettings.SHIELD_RECHARGE_TIME;
+			shieldReactivateTime = Time.time + GameSettings.SHIELD_RECHARGE_TIME;
 		}
 	}
 
