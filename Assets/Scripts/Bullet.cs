@@ -3,6 +3,8 @@ using System.Collections;
 
 public class Bullet : MonoBehaviour
 {
+	public bool isSuper;
+
 	public delegate void OnHit();
 	public event OnHit onHitEvent;
 
@@ -11,7 +13,14 @@ public class Bullet : MonoBehaviour
 	// Use this for initialization
 	void Start ()
     {
-        speed = 10.0f;
+		if (isSuper)
+		{
+			speed = 8.0f;
+		}
+		else
+		{
+        	speed = 10.0f;
+		}
 
 	}
 	
@@ -34,7 +43,10 @@ public class Bullet : MonoBehaviour
 	{
 		if (coll.tag == "EnemyBullet")
 		{
-			gameObject.SetActive(false);
+			if (!isSuper)
+			{
+				gameObject.SetActive(false);
+			}
 			coll.gameObject.SetActive(false);
 
 			if (onHitEvent != null)

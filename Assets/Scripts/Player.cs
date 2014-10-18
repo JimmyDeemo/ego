@@ -14,11 +14,39 @@ public class Player : MonoBehaviour
     private float horizontalMovement;
 
     public GameObject shotPrefab;
+	public GameObject superShotPrefab;
     private GameObject[] bulletPool;
 	private float nextFireTime;
 
     private Vector3 spawnPosition;
     private Vector3 spawnScale;
+
+	private bool shieldActive;
+	public bool ShieldActive
+	{
+		get
+		{
+			return this.shieldActive;
+		}
+	}
+
+	private float shieldReactivateTime;
+	public float ShieldReactivateTime
+	{
+		get
+		{
+			return this.shieldReactivateTime;
+		}
+	}
+
+	public float ShieldDeactivateTime
+	{
+		get
+		{
+			return this.shieldReactivateTime - GameSettings.SHIELD_RECHARGE_TIME;
+		}
+	}
+
 
 	// Use this for initialization
 	private void Start ()
@@ -29,17 +57,24 @@ public class Player : MonoBehaviour
 
 		nextFireTime = Time.time + GameSettings.PLAYER_RATE_OF_FIRE;
 
+		SetShieldActive(true);
+
         //Could hard code these but take them from the scene view in case they get
         //modified there.
 		spawnPosition = transform.position;
         spawnScale = transform.localScale;
 	}
 
+	/// <summary>
+	/// Resets the player ready for a new game.
+	/// Sets the game object to active at the end effectively begins the new games.
+	/// </summary>
 	public void Reset()
 	{
         transform.position = spawnPosition;
         transform.localScale = spawnScale;
 
+		//Unlikely that bullets would still be active but just in case.
         foreach (var bullet in bulletPool)
         {
             if (bullet != null)
@@ -48,12 +83,22 @@ public class Player : MonoBehaviour
             }
         }
 
+		SetShieldActive(true);
+
         gameObject.SetActive(true);
 	}
 	
 	// Update is called once per frame
     private void Update()
     {
+		if (!shieldActive)
+		{
+			if (Time.time >= shieldReactivateTime)
+			{
+				SetShieldActive(true);
+			}
+		}
+
         verticalMovement = Input.GetAxis("Vertical") * speed * Time.deltaTime;
         horizontalMovement = Input.GetAxis("Horizontal") * speed * Time.deltaTime;
 
@@ -71,6 +116,27 @@ public class Player : MonoBehaviour
 			FireBullet(-GameSettings.GUN_SEPARATION);
 			nextFireTime = Time.time + GameSettings.PLAYER_RATE_OF_FIRE;
         }
+
+		//If we have released the fire button with a shield up, that means the players
+		//needs a 'super shot'.
+		if ( Input.GetButtonUp("Fire1") && shieldActive )
+		{
+			SetShieldActive(false);
+			SpawnSuperShot();
+		}
+	}
+
+	private void SpawnSuperShot()
+	{
+		int numToSpawn = Mathf.CeilToInt( GameSettings.SUPER_SHOT_RATIO * ( transform.localScale.x / spawnScale.x ) );
+		float playerWidth = GetComponent<SpriteRenderer>().bounds.size.x;
+		float xSeparation = playerWidth / numToSpawn;
+
+		for (int i = 0; i < numToSpawn; i++)
+		{
+			Instantiate(superShotPrefab, new Vector3( transform.position.x - (playerWidth * 0.5f) + (i * xSeparation), transform.position.y, transform.position.z), transform.rotation);	
+		}
+
 	}
 
     private void FireBullet(float positionOffset)
@@ -95,7 +161,7 @@ public class Player : MonoBehaviour
 	        if (bulletPool[bulletID] == null)
             {
 				bulletPool[bulletID] = (GameObject)Instantiate(shotPrefab, firePosition, transform.rotation);
-				bulletPool[bulletID].GetComponent<Bullet>().onHitEvent += registerHit;
+				bulletPool[bulletID].GetComponent<Bullet>().onHitEvent += RegisterHit;
                 return;
             }
 	    }
@@ -103,7 +169,34 @@ public class Player : MonoBehaviour
 		Debug.LogWarning("Player bullet pool full!");
     }
 
-    private void registerHit()
+	private void OnTriggerEnter2D(Collider2D coll)
+	{
+		if (coll.tag == "EnemyBullet")
+		{
+			if (shieldActive)
+			{
+				SetShieldActive(false);
+				coll.gameObject.SetActive(false);
+			}
+			else
+			{
+				gameObject.SetActive(false);
+			}
+		}
+	}
+
+	private void SetShieldActive( bool isActive )
+	{
+		shieldActive = isActive;
+		transform.Find("Shield").gameObject.SetActive(isActive);
+
+		if (!isActive)
+		{
+			shieldReactivateTime = Time.time + GameSettings.SHIELD_RECHARGE_TIME;
+		}
+	}
+
+    private void RegisterHit()
 	{
 		gameObject.transform.localScale *= GameSettings.PLAYER_SCALE_FACTOR;
 

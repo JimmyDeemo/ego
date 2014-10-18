@@ -30,12 +30,4 @@ public class EnemyShot : MonoBehaviour
 		direction = newDirection;
 		gameObject.SetActive(true);
 	}
-
-	void OnTriggerEnter2D(Collider2D coll)
-	{
-		if (coll.tag == "Player")
-		{
-			coll.gameObject.SetActive(false);
-		}
-	}
 }
