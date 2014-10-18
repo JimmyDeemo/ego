@@ -14,6 +14,7 @@ public class Player : MonoBehaviour
     private float horizontalMovement;
 
     public GameObject shotPrefab;
+	public GameObject superShotPrefab;
     private GameObject[] bulletPool;
 	private float nextFireTime;
 
@@ -115,6 +116,27 @@ public class Player : MonoBehaviour
 			FireBullet(-GameSettings.GUN_SEPARATION);
 			nextFireTime = Time.time + GameSettings.PLAYER_RATE_OF_FIRE;
         }
+
+		//If we have released the fire button with a shield up, that means the players
+		//needs a 'super shot'.
+		if ( Input.GetButtonUp("Fire1") && shieldActive )
+		{
+			SetShieldActive(false);
+			SpawnSuperShot();
+		}
+	}
+
+	private void SpawnSuperShot()
+	{
+		int numToSpawn = Mathf.CeilToInt( GameSettings.SUPER_SHOT_RATIO * ( transform.localScale.x / spawnScale.x ) );
+		float playerWidth = GetComponent<SpriteRenderer>().bounds.size.x;
+		float xSeparation = playerWidth / numToSpawn;
+
+		for (int i = 0; i < numToSpawn; i++)
+		{
+			Instantiate(superShotPrefab, new Vector3( transform.position.x - (playerWidth * 0.5f) + (i * xSeparation), transform.position.y, transform.position.z), transform.rotation);	
+		}
+
 	}
 
     private void FireBullet(float positionOffset)
