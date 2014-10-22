@@ -150,6 +150,7 @@ public class Player : MonoBehaviour
                 if (bulletPool[bulletID].activeSelf == false)
                 {
 					bulletPool[bulletID].GetComponent<Bullet>().Reset(firePosition);
+					SoundManager.Instance.PlayShootSound();
                     return;
                 }
             }
@@ -162,6 +163,7 @@ public class Player : MonoBehaviour
             {
 				bulletPool[bulletID] = (GameObject)Instantiate(shotPrefab, firePosition, transform.rotation);
 				bulletPool[bulletID].GetComponent<Bullet>().onHitEvent += RegisterHit;
+				SoundManager.Instance.PlayShootSound();
                 return;
             }
 	    }
