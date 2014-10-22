@@ -103,7 +103,7 @@ ParticleSystemRenderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2100000, guid: b42bf5a660c900c4a8c9d9de20e4ea82, type: 2}
+  - {fileID: 2100000, guid: cd0fb8f0b4fee9f43ba4c5b703dcbf29, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -300,7 +300,7 @@ ParticleSystem:
         rgba: 4294967295
       minMaxState: 0
     startSize:
-      scalar: .200000003
+      scalar: .180000007
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1410,7 +1410,7 @@ ParticleSystemRenderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2100000, guid: b42bf5a660c900c4a8c9d9de20e4ea82, type: 2}
+  - {fileID: 2100000, guid: 943384d996db2384ea588bc1b4e8ae58, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -1480,7 +1480,7 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 0
     startSpeed:
-      scalar: 1
+      scalar: 2
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1604,10 +1604,10 @@ ParticleSystem:
         rgba: 4294967295
       maxColor:
         serializedVersion: 2
-        rgba: 4294967295
+        rgba: 4286216826
       minMaxState: 0
     startSize:
-      scalar: .200000003
+      scalar: .180000007
       maxCurve:
         serializedVersion: 2
         m_Curve:
