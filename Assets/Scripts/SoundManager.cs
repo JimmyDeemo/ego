@@ -6,7 +6,11 @@ using System.Collections;
 /// </summary>
 public class SoundManager : MonoBehaviour
 {
-	public AudioClip playerShootSound;
+	public AudioClip playerShoot;
+	public AudioClip superShot;
+	public AudioClip shieldDown;
+	public AudioClip shieldUp;
+	public AudioClip lose;
 
 	private static SoundManager instance;
 	public static SoundManager Instance
@@ -26,8 +30,28 @@ public class SoundManager : MonoBehaviour
 		instance = this;
 	}
 
-	public void PlayShootSound()
+	public void ShootSound()
 	{
-		audio.PlayOneShot(playerShootSound);
+		audio.PlayOneShot(playerShoot);
+	}
+
+	public void SuperShot()
+	{
+		audio.PlayOneShot(superShot);
+	}
+
+	public void ShieldDown()
+	{
+		audio.PlayOneShot(shieldDown);
+	}
+
+	public void ShieldUp()
+	{
+		audio.PlayOneShot(shieldUp);
+	}
+
+	public void Lose()
+	{
+		audio.PlayOneShot(lose);
 	}
 }
