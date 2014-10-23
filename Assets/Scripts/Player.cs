@@ -137,6 +137,7 @@ public class Player : MonoBehaviour
 			Instantiate(superShotPrefab, new Vector3( transform.position.x - (playerWidth * 0.5f) + (i * xSeparation), transform.position.y, transform.position.z), transform.rotation);	
 		}
 
+		SoundManager.Instance.SuperShot();
 	}
 
     private void FireBullet(float positionOffset)
@@ -150,6 +151,7 @@ public class Player : MonoBehaviour
                 if (bulletPool[bulletID].activeSelf == false)
                 {
 					bulletPool[bulletID].GetComponent<Bullet>().Reset(firePosition);
+					SoundManager.Instance.ShootSound();
                     return;
                 }
             }
@@ -162,6 +164,7 @@ public class Player : MonoBehaviour
             {
 				bulletPool[bulletID] = (GameObject)Instantiate(shotPrefab, firePosition, transform.rotation);
 				bulletPool[bulletID].GetComponent<Bullet>().onHitEvent += RegisterHit;
+				SoundManager.Instance.ShootSound();
                 return;
             }
 	    }
@@ -180,6 +183,7 @@ public class Player : MonoBehaviour
 			}
 			else
 			{
+				SoundManager.Instance.Lose();
 				gameObject.SetActive(false);
 			}
 		}
@@ -192,7 +196,12 @@ public class Player : MonoBehaviour
 
 		if (!isActive)
 		{
+			SoundManager.Instance.ShieldDown();
 			shieldReactivateTime = Time.time + GameSettings.SHIELD_RECHARGE_TIME;
+		}
+		else
+		{
+			SoundManager.Instance.ShieldUp();
 		}
 	}
 

@@ -15,9 +15,9 @@ TagManager:
   Builtin Layer 5: UI
   Builtin Layer 6: 
   Builtin Layer 7: 
-  User Layer 8: 
-  User Layer 9: 
-  User Layer 10: 
+  User Layer 8: Background
+  User Layer 9: Foreground
+  User Layer 10: GUI
   User Layer 11: 
   User Layer 12: 
   User Layer 13: 
@@ -43,6 +43,10 @@ TagManager:
   - name: Default
     userID: 0
     uniqueID: 0
+    locked: 0
+  - name: Foreground
+    userID: 2
+    uniqueID: 360196947
     locked: 0
   - name: UI
     userID: 1
