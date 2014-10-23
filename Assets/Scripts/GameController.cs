@@ -62,6 +62,9 @@ public class GameController : MonoBehaviour
                 enemy.SetActive(false);
             }
         }
+
+		shieldMeterRef.transform.localScale.Set(shieldMeterFullSize.x, shieldMeterFullSize.y, shieldMeterFullSize.z);
+		shieldMeterRef.transform.position = shieldMeterDefaultPosition;
     }
 	
 	// Update is called once per frame
@@ -117,8 +120,10 @@ public class GameController : MonoBehaviour
 	private void  SetOverlayVisibility( bool isVisable )
 	{
 		logoRef.renderer.enabled = isVisable;
-		scoreRef.SetActive(!isVisable);
 		howToPlayRef.SetActive(isVisable);
+
+		scoreRef.SetActive(!isVisable);
+		shieldMeterRef.SetActive(!isVisable);
 
 		if (score != -1)
 		{
