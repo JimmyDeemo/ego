@@ -8,16 +8,21 @@ public class GameController : MonoBehaviour
 	public Vector2 spawnPostionMax;
 
 	public GameObject playerRef;
-	public Transform playerTransform;
-	public Player playerScript;
+	private Transform playerTransform;
+	private Player playerScript;
+
+	public GameObject howToPlayRef;
     public GameObject logoRef;
 	public GameObject scoreRef;
+	public GameObject prevScoreRef;
+	public GameObject highScoreRef;
 	public GameObject shieldMeterRef;
 
 	public Vector3 shieldMeterFullSize;
 	public Vector3 shieldMeterDefaultPosition;
 
 	private int score;
+	private int highScore;
 
 	private float nextSpawnTime;
 
