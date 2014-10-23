@@ -28,6 +28,8 @@ public class SoundManager : MonoBehaviour
 	private void Awake()
 	{
 		instance = this;
+
+		audio.volume = 0.8f;
 	}
 
 	public void ShootSound()

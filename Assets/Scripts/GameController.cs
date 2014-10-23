@@ -8,16 +8,21 @@ public class GameController : MonoBehaviour
 	public Vector2 spawnPostionMax;
 
 	public GameObject playerRef;
-	public Transform playerTransform;
-	public Player playerScript;
+	private Transform playerTransform;
+	private Player playerScript;
+
+	public GameObject howToPlayRef;
     public GameObject logoRef;
 	public GameObject scoreRef;
+	public GameObject prevScoreRef;
+	public GameObject highScoreRef;
 	public GameObject shieldMeterRef;
 
 	public Vector3 shieldMeterFullSize;
 	public Vector3 shieldMeterDefaultPosition;
 
 	private int score;
+	private int highScore;
 
 	private float nextSpawnTime;
 
@@ -39,6 +44,9 @@ public class GameController : MonoBehaviour
 
 		shieldMeterFullSize = shieldMeterRef.transform.localScale;
 		shieldMeterDefaultPosition = shieldMeterRef.transform.position;
+
+		highScore = -1;
+		score = -1;
 	}
 
     void ResetGame()
@@ -68,9 +76,7 @@ public class GameController : MonoBehaviour
 
         if (playerRef.activeSelf)
         {
-			//TODO: Optimize this to not set each frame.
-            logoRef.renderer.enabled = false;
-			scoreRef.SetActive(true);
+			SetOverlayVisibility(false);
 
 			if (!playerScript.ShieldActive)
 			{
@@ -89,22 +95,56 @@ public class GameController : MonoBehaviour
 			}
 
 			scoreRef.GetComponent<GUIText>().text = score.ToString();
+
+			SpawnEnemies();
         }
 		else
         {
-            logoRef.renderer.enabled = true;
-			scoreRef.SetActive(false);
+			highScore = Mathf.Max( score, highScore );
+			SetOverlayVisibility(true);
 
             if ( Input.GetKeyDown(KeyCode.R) )
             {
                 ResetGame();
             }
         }
-
-		SpawnEnemies();
 	}
 
-	void SpawnEnemies()
+	/// <summary>
+	/// TODO
+	/// </summary>
+	/// <param name="isVisable">If set to <c>true</c> is visable.</param>
+	private void  SetOverlayVisibility( bool isVisable )
+	{
+		logoRef.renderer.enabled = isVisable;
+		scoreRef.SetActive(!isVisable);
+		howToPlayRef.SetActive(isVisable);
+
+		if (score != -1)
+		{
+			prevScoreRef.GetComponent<GUIText>().text = GameSettings.PREVIOUS_SCORE_TEXT + score.ToString();
+			prevScoreRef.GetComponent<GUIText>().enabled = isVisable;
+		}
+		else
+		{
+			prevScoreRef.GetComponent<GUIText>().enabled = false;
+		}
+
+		if (highScore != -1)
+		{
+			highScoreRef.GetComponent<GUIText>().text = GameSettings.HIGH_SCORE_TEXT + highScore.ToString();
+			highScoreRef.GetComponent<GUIText>().enabled = isVisable;
+		}
+		else
+		{
+			highScoreRef.GetComponent<GUIText>().enabled = false;
+		}
+	}
+
+	/// <summary>
+	/// Spawns enemy clusters based upon a random chance.
+	/// </summary>
+	private void SpawnEnemies()
 	{
 		if (Time.time > nextSpawnTime)
 		{
@@ -236,6 +276,10 @@ public class GameController : MonoBehaviour
 
 	void ScoreHit()
 	{
-		score++;
+		//Check here because other wise player can score with bullets that are loose after death.
+		if (playerRef.activeSelf)
+		{
+			score++;
+		}
 	}
 }

@@ -1217,9 +1217,9 @@ GUIText:
   m_PixelOffset: {x: 0, y: 0}
   m_LineSpacing: 1
   m_TabSize: 4
-  m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Font: {fileID: 12800000, guid: e3e533b3f72f7a740b382cdc2d27f06f, type: 3}
   m_Material: {fileID: 0}
-  m_FontSize: 21
+  m_FontSize: 0
   m_FontStyle: 0
   m_Color:
     serializedVersion: 2
@@ -1238,6 +1238,57 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 5
+--- !u!1 &432109161
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 432109162}
+  - 132: {fileID: 432109163}
+  m_Layer: 10
+  m_Name: LastGame
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &432109162
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 432109161}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: .203675076, y: .534880936, z: 0}
+  m_LocalScale: {x: .460196435, y: .575246394, z: .460196882}
+  m_Children: []
+  m_Father: {fileID: 2130100605}
+  m_RootOrder: 1
+--- !u!132 &432109163
+GUIText:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 432109161}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Text: 'Score last game:'
+  m_Anchor: 4
+  m_Alignment: 1
+  m_PixelOffset: {x: 0, y: 0}
+  m_LineSpacing: 1
+  m_TabSize: 4
+  m_Font: {fileID: 12800000, guid: e3e533b3f72f7a740b382cdc2d27f06f, type: 3}
+  m_Material: {fileID: 0}
+  m_FontSize: 0
+  m_FontStyle: 0
+  m_Color:
+    serializedVersion: 2
+    rgba: 4290012026
+  m_PixelCorrect: 1
+  m_RichText: 1
 --- !u!1 &690060069
 GameObject:
   m_ObjectHideFlags: 0
@@ -1434,6 +1485,57 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 10
+--- !u!1 &862494636
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 862494638}
+  - 132: {fileID: 862494637}
+  m_Layer: 10
+  m_Name: ToPlay
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!132 &862494637
+GUIText:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 862494636}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Text: Press 'R' to play.
+  m_Anchor: 4
+  m_Alignment: 1
+  m_PixelOffset: {x: 0, y: 0}
+  m_LineSpacing: 1
+  m_TabSize: 4
+  m_Font: {fileID: 12800000, guid: e3e533b3f72f7a740b382cdc2d27f06f, type: 3}
+  m_Material: {fileID: 0}
+  m_FontSize: 0
+  m_FontStyle: 0
+  m_Color:
+    serializedVersion: 2
+    rgba: 4290012026
+  m_PixelCorrect: 1
+  m_RichText: 1
+--- !u!4 &862494638
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 862494636}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: .203675017, y: .389447123, z: 0}
+  m_LocalScale: {x: .460196435, y: .575246394, z: .460196882}
+  m_Children: []
+  m_Father: {fileID: 2130100605}
+  m_RootOrder: 0
 --- !u!1 &951051938
 GameObject:
   m_ObjectHideFlags: 0
@@ -2628,10 +2730,11 @@ MonoBehaviour:
   spawnPostionMin: {x: -4, y: 8.5}
   spawnPostionMax: {x: 4, y: 2}
   playerRef: {fileID: 690060069}
-  playerTransform: {fileID: 0}
-  playerScript: {fileID: 0}
+  howToPlayRef: {fileID: 862494636}
   logoRef: {fileID: 2130100603}
   scoreRef: {fileID: 323232215}
+  prevScoreRef: {fileID: 432109161}
+  highScoreRef: {fileID: 1253205422}
   shieldMeterRef: {fileID: 1802232874}
   shieldMeterFullSize: {x: 0, y: 0, z: 0}
   shieldMeterDefaultPosition: {x: 0, y: 0, z: 0}
@@ -2811,6 +2914,57 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+--- !u!1 &1253205422
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1253205423}
+  - 132: {fileID: 1253205424}
+  m_Layer: 10
+  m_Name: HighScore
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1253205423
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1253205422}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: .203675076, y: .512506545, z: 0}
+  m_LocalScale: {x: .460196435, y: .575246394, z: .460196882}
+  m_Children: []
+  m_Father: {fileID: 2130100605}
+  m_RootOrder: 2
+--- !u!132 &1253205424
+GUIText:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1253205422}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Text: 'Highest Score:'
+  m_Anchor: 4
+  m_Alignment: 1
+  m_PixelOffset: {x: 0, y: 0}
+  m_LineSpacing: 1
+  m_TabSize: 4
+  m_Font: {fileID: 12800000, guid: e3e533b3f72f7a740b382cdc2d27f06f, type: 3}
+  m_Material: {fileID: 0}
+  m_FontSize: 0
+  m_FontStyle: 0
+  m_Color:
+    serializedVersion: 2
+    rgba: 4290012026
+  m_PixelCorrect: 1
+  m_RichText: 1
 --- !u!1 &1802232874
 GameObject:
   m_ObjectHideFlags: 0
@@ -4041,6 +4195,9 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: .0644810721, y: -.2794182, z: 0}
   m_LocalScale: {x: 2.17298508, y: 1.73838556, z: 2.17298293}
-  m_Children: []
+  m_Children:
+  - {fileID: 862494638}
+  - {fileID: 432109162}
+  - {fileID: 1253205423}
   m_Father: {fileID: 0}
   m_RootOrder: 4
