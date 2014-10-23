@@ -30,4 +30,9 @@ public class GameSettings
 	public static float ENEMY_SPEED_MIN = 2.0f;
 	public static float ENEMY_SPEED_MAX = 3.0f;
 #endregion
+
+#region Misc Settings
+	public static string PREVIOUS_SCORE_TEXT = "Score last game: ";
+	public static string HIGH_SCORE_TEXT = "Highest Score: ";
+#endregion
 }
