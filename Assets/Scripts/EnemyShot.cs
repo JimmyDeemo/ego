@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Class script for an enemy bullet. Handles movement and collision.
+/// </summary>
 public class EnemyShot : MonoBehaviour
 {
 	private Vector3 direction;

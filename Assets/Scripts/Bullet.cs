@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Class script for a player bullet. Handles movement and collision.
+/// </summary>
 public class Bullet : MonoBehaviour
 {
 	public bool isSuper;
@@ -10,8 +13,11 @@ public class Bullet : MonoBehaviour
 
     private float speed;
 
-	// Use this for initialization
-	void Start ()
+#region Private member functions.
+	/// <summary>
+	/// Initialisation function used by Unity.
+	/// </summary>
+	private void Start ()
     {
 		if (isSuper)
 		{
@@ -24,8 +30,10 @@ public class Bullet : MonoBehaviour
 
 	}
 	
-	// Update is called once per frame
-	void Update ()
+	/// <summary>
+	/// Update function used by Unity.
+	/// </summary>
+    private void Update()
     {
         if (gameObject.activeSelf)
         {
@@ -33,13 +41,12 @@ public class Bullet : MonoBehaviour
         }
 	}
 
-    public void Reset(Vector3 startPosition)
-    {
-        transform.position = startPosition;
-        gameObject.SetActive(true);
-    }
-
-	void OnTriggerEnter2D(Collider2D coll)
+    /// <summary>
+    /// Trigger function used by Unity. Called when this objects collides with
+    /// another 2D object set as a 'Trigger'.
+    /// </summary>
+    /// <param name="coll">Collider2D reference of the object that has collided with this one.</param>
+	private void OnTriggerEnter2D(Collider2D coll)
 	{
 		if (coll.tag == "EnemyBullet")
 		{
@@ -55,4 +62,18 @@ public class Bullet : MonoBehaviour
 			}
 		}
 	}
+#endregion
+
+#region Public member functions
+    /// <summary>
+    /// Reset this bullet to a new starting position and sets it to active.
+    /// Primarily used by anything that pools bullet objects, e.g. Player.
+    /// </summary>
+    /// <param name="startPosition">The new position for this object to start at.</param>
+    public void Reset(Vector3 startPosition)
+    {
+        transform.position = startPosition;
+        gameObject.SetActive(true);
+    }
+#endregion
 }
