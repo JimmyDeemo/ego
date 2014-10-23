@@ -89,6 +89,8 @@ public class GameController : MonoBehaviour
 			}
 
 			scoreRef.GetComponent<GUIText>().text = score.ToString();
+
+			SpawnEnemies();
         }
 		else
         {
@@ -104,7 +106,10 @@ public class GameController : MonoBehaviour
 		SpawnEnemies();
 	}
 
-	void SpawnEnemies()
+	/// <summary>
+	/// Spawns enemy clusters based upon a random chance.
+	/// </summary>
+	private void SpawnEnemies()
 	{
 		if (Time.time > nextSpawnTime)
 		{
@@ -236,6 +241,10 @@ public class GameController : MonoBehaviour
 
 	void ScoreHit()
 	{
-		score++;
+		//Check here because other wise player can score with bullets that are loose after death.
+		if (playerRef.activeSelf)
+		{
+			score++;
+		}
 	}
 }
