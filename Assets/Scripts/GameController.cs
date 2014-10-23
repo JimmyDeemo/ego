@@ -44,6 +44,9 @@ public class GameController : MonoBehaviour
 
 		shieldMeterFullSize = shieldMeterRef.transform.localScale;
 		shieldMeterDefaultPosition = shieldMeterRef.transform.position;
+
+		highScore = -1;
+		score = -1;
 	}
 
     void ResetGame()
@@ -73,9 +76,7 @@ public class GameController : MonoBehaviour
 
         if (playerRef.activeSelf)
         {
-			//TODO: Optimize this to not set each frame.
-            logoRef.renderer.enabled = false;
-			scoreRef.SetActive(true);
+			SetOverlayVisibility(false);
 
 			if (!playerScript.ShieldActive)
 			{
@@ -99,16 +100,45 @@ public class GameController : MonoBehaviour
         }
 		else
         {
-            logoRef.renderer.enabled = true;
-			scoreRef.SetActive(false);
+			highScore = Mathf.Max( score, highScore );
+			SetOverlayVisibility(true);
 
             if ( Input.GetKeyDown(KeyCode.R) )
             {
                 ResetGame();
             }
         }
+	}
 
-		SpawnEnemies();
+	/// <summary>
+	/// TODO
+	/// </summary>
+	/// <param name="isVisable">If set to <c>true</c> is visable.</param>
+	private void  SetOverlayVisibility( bool isVisable )
+	{
+		logoRef.renderer.enabled = isVisable;
+		scoreRef.SetActive(!isVisable);
+		howToPlayRef.SetActive(isVisable);
+
+		if (score != -1)
+		{
+			prevScoreRef.GetComponent<GUIText>().text = GameSettings.PREVIOUS_SCORE_TEXT + score.ToString();
+			prevScoreRef.GetComponent<GUIText>().enabled = isVisable;
+		}
+		else
+		{
+			prevScoreRef.GetComponent<GUIText>().enabled = false;
+		}
+
+		if (highScore != -1)
+		{
+			highScoreRef.GetComponent<GUIText>().text = GameSettings.HIGH_SCORE_TEXT + highScore.ToString();
+			highScoreRef.GetComponent<GUIText>().enabled = isVisable;
+		}
+		else
+		{
+			highScoreRef.GetComponent<GUIText>().enabled = false;
+		}
 	}
 
 	/// <summary>
