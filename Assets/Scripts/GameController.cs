@@ -32,6 +32,10 @@ public class GameController : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
+#if UNITY_ANDROID
+		howToPlayRef.guiText.text = "Touch (and hold) screen to start.";
+#endif
+
 		enemyBulletPool = new GameObject[GameSettings.ENEMY_BULLET_POOL_SIZE];
 		nextSpawnTime = Time.time;
 
@@ -106,7 +110,11 @@ public class GameController : MonoBehaviour
 			highScore = Mathf.Max( score, highScore );
 			SetOverlayVisibility(true);
 
-            if ( Input.GetKeyDown(KeyCode.R) )
+#if UNITY_ANDROID
+			if ( Input.GetMouseButtonDown( 0 ) )
+#else
+				if ( Input.GetKeyDown(KeyCode.R) )
+#endif
             {
                 ResetGame();
             }
