@@ -99,10 +99,17 @@ public class Player : MonoBehaviour
 			}
 		}
 
+#if UNITY_ANDROID
+		Vector3 pos = Input.mousePosition;
+		pos.z = transform.position.z - Camera.main.transform.position.z;
+		transform.position = Camera.main.ScreenToWorldPoint( pos ); 
+#else
         verticalMovement = Input.GetAxis("Vertical") * speed * Time.deltaTime;
         horizontalMovement = Input.GetAxis("Horizontal") * speed * Time.deltaTime;
 
+
         transform.Translate(horizontalMovement, verticalMovement, 0.0f);
+#endif
 
 		//Clamp to the screen.
 		Vector3 playerScreenPosition = Camera.main.WorldToScreenPoint( transform.position );
