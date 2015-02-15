@@ -6,10 +6,10 @@ using System.Collections;
 /// </summary>
 public class Bullet : MonoBehaviour
 {
-	public bool isSuper;
-
 	public delegate void OnHit();
 	public event OnHit onHitEvent;
+
+	public bool isSuper;
 
     private float speed;
 
@@ -50,10 +50,12 @@ public class Bullet : MonoBehaviour
 	{
 		if (coll.tag == "EnemyBullet")
 		{
+			//Kill kill both unless this is a super bullet.
 			if (!isSuper)
 			{
 				gameObject.SetActive(false);
 			}
+
 			coll.gameObject.SetActive(false);
 
 			if (onHitEvent != null)
