@@ -9,16 +9,22 @@ public class EnemyShot : MonoBehaviour
 	private Vector3 direction;
 	private float speed;
 
-	// Use this for initialization
-	void Start ()
+#region Private member functions.
+	/// <summary>
+	/// Initialisation function used by Unity.
+	/// </summary>
+	private void Start ()
 	{
 	}
 
-	// Update is called once per frame
-	void Update ()
+	/// <summary>
+	/// Update function used by Unity.
+	/// </summary>
+	private void Update ()
 	{
 		transform.Translate (direction * (speed * Time.deltaTime));
 	}
+#endregion
 
 	/// <summary>
 	/// Resets the object with a new start position, direction and speed.
