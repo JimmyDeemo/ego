@@ -32,7 +32,7 @@ public class SoundManager : MonoBehaviour
 	{
 		instance = this;
 
-		audio.volume = 0.8f;
+		GetComponent<AudioSource>().volume = 0.8f;
 	}
 
 	/// <summary>
@@ -40,7 +40,7 @@ public class SoundManager : MonoBehaviour
 	/// </summary>
 	public void ShootSound()
 	{
-		audio.PlayOneShot(playerShoot);
+		GetComponent<AudioSource>().PlayOneShot(playerShoot);
 	}
 
 	/// <summary>
@@ -48,7 +48,7 @@ public class SoundManager : MonoBehaviour
 	/// </summary>
 	public void SuperShot()
 	{
-		audio.PlayOneShot(superShot);
+		GetComponent<AudioSource>().PlayOneShot(superShot);
 	}
 
 	/// <summary>
@@ -56,7 +56,7 @@ public class SoundManager : MonoBehaviour
 	/// </summary>
 	public void ShieldDown()
 	{
-		audio.PlayOneShot(shieldDown);
+		GetComponent<AudioSource>().PlayOneShot(shieldDown);
 	}
 
 	/// <summary>
@@ -64,7 +64,7 @@ public class SoundManager : MonoBehaviour
 	/// </summary>
 	public void ShieldUp()
 	{
-		audio.PlayOneShot(shieldUp);
+		GetComponent<AudioSource>().PlayOneShot(shieldUp);
 	}
 
 	/// <summary>
@@ -72,6 +72,6 @@ public class SoundManager : MonoBehaviour
 	/// </summary>
 	public void Lose()
 	{
-		audio.PlayOneShot(lose);
+		GetComponent<AudioSource>().PlayOneShot(lose);
 	}
 }
