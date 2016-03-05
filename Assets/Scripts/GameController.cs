@@ -39,7 +39,7 @@ public class GameController : MonoBehaviour
 	private void Start ()
 	{
 #if UNITY_ANDROID
-		howToPlayRef.guiText.text = "Touch (and hold) screen to start.";
+		howToPlayRef.GetComponent<GUIText>().text = "Touch (and hold) screen to start.";
 #endif
 
 		enemyBulletPool = new GameObject[GameSettings.ENEMY_BULLET_POOL_SIZE];
@@ -106,12 +106,12 @@ public class GameController : MonoBehaviour
 				                                                shieldMeterDefaultPosition.y,
 				                                                shieldMeterDefaultPosition.z
 				                                                );
-				shieldMeterRef.renderer.material.color = new Color( 1.0f, 0.0f, 0.0f);
+				shieldMeterRef.GetComponent<Renderer>().material.color = new Color( 1.0f, 0.0f, 0.0f);
 			}
 			else
 			{
 				shieldMeterRef.transform.localScale = shieldMeterFullSize;
-				shieldMeterRef.renderer.material.color = new Color( 0.0f, 1.0f, 0.0f);
+				shieldMeterRef.GetComponent<Renderer>().material.color = new Color( 0.0f, 1.0f, 0.0f);
 			}
 
 			scoreRef.GetComponent<GUIText>().text = score.ToString();
@@ -142,7 +142,7 @@ public class GameController : MonoBehaviour
 	private void  SetOverlayVisibility( bool isVisable )
 	{
 		//Start screen asssets and game UI should be mutually exclusive.
-		logoRef.renderer.enabled = isVisable;
+		logoRef.GetComponent<Renderer>().enabled = isVisable;
 		howToPlayRef.SetActive(isVisable);
 
 		scoreRef.SetActive(!isVisable);
