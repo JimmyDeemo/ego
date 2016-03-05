@@ -1,36 +1,52 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class GameController : MonoBehaviour
 {
+	public enum ClusterType { SHOTGUN, PULSE };
 
 #region Public member variables.
-	public GameObject enemyShot;
-	public Vector2 spawnPostionMin;
-	public Vector2 spawnPostionMax;
+	public float ShotgunChancePercentage = 0.5f;
+		   
+	public float ShotgunSpread = 3.0f;
+	public float PulseSpread = 110.0f; //In degrees.
+		   
+	public int EnemyBulletPoolSize = 100;
+	public float MinEnemySpawmRate = 0.5f; //In seconds.
+	public float MaxEnemySpawnRate = 1.0f; //In seconds.
+	public float MinEnemySpeed = 2.0f;
+	public float MaxEnemySpeed = 3.0f;
 
-	public GameObject playerRef;
-	public GameObject howToPlayRef;
-	public GameObject logoRef;
-	public GameObject scoreRef;
-	public GameObject prevScoreRef;
-	public GameObject highScoreRef;
-	public GameObject shieldMeterRef;
+	public string PreviousScoreText = "Score last game: ";
+	public string HighScoreText = "Highest Score: ";
+
+	public GameObject EnemyShot;
+	public Vector2 SpawnPostionMin;
+	public Vector2 SpawnPostionMax;
+
+	//TODO: Dear lord the GO references!? This stinks of too much being in the controller; these need pulling out.
+	public GameObject PlayerRef;
+	public GameObject HowToPlayRef;
+	public GameObject LogoRef;
+	public GameObject ScoreRef;
+	public GameObject PrevScoreRef;
+	public GameObject HighScoreRef;
+	public GameObject ShieldMeterRef;
 
 	public Vector3 shieldMeterFullSize;
 	public Vector3 shieldMeterDefaultPosition;
 #endregion
 
-#region Public member variables.
-	private int score;
-	private int highScore;
+#region Private member variables.
+	private int m_Score;
+	private int m_HighScore;
 
-	private Transform playerTransform;
-	private Player playerScript;
+	private Transform m_PlayerTransform;
+	private Player m_PlayerScript;
 
-	private float nextSpawnTime;
+	private float m_NextSpawnTime;
 
-	private GameObject[] enemyBulletPool;
+	private GameObject[] m_EnemyBulletPool;
 #endregion
 
 	/// <summary>
@@ -39,24 +55,25 @@ public class GameController : MonoBehaviour
 	private void Start ()
 	{
 #if UNITY_ANDROID
-		howToPlayRef.GetComponent<GUIText>().text = "Touch (and hold) screen to start.";
+		//TODO: Remove his GetComponent.
+		HowToPlayRef.GetComponent<GUIText>().text = "Touch (and hold) screen to start.";
 #endif
 
-		enemyBulletPool = new GameObject[GameSettings.ENEMY_BULLET_POOL_SIZE];
-		nextSpawnTime = Time.time;
+		m_EnemyBulletPool = new GameObject[EnemyBulletPoolSize];
+		m_NextSpawnTime = Time.time;
 
-		playerTransform = playerRef.transform;
-		playerScript = playerRef.GetComponent<Player>();
+		m_PlayerTransform = PlayerRef.transform;
+		m_PlayerScript = PlayerRef.GetComponent<Player>();
 
 		//Start the player dead and the logo visible.
-		playerRef.SetActive(false);
-		playerRef.GetComponent<Player>().onRegisterHit += ScoreHit;
+		PlayerRef.SetActive(false);
+		PlayerRef.GetComponent<Player>().HitRegisteredEventHandler += ScoreHit;
 
-		shieldMeterFullSize = shieldMeterRef.transform.localScale;
-		shieldMeterDefaultPosition = shieldMeterRef.transform.position;
+		shieldMeterFullSize = ShieldMeterRef.transform.localScale;
+		shieldMeterDefaultPosition = ShieldMeterRef.transform.position;
 
-		highScore = -1;
-		score = -1;
+		m_HighScore = -1;
+		m_Score = -1;
 	}
 
 	/// <summary>
@@ -64,11 +81,11 @@ public class GameController : MonoBehaviour
 	/// </summary>
 	private void ResetGame()
 	{
-		score = 0;
-		playerRef.GetComponent<Player>().Reset();
+		m_Score = 0;
+		PlayerRef.GetComponent<Player>().Reset();
 
 		//No need to destroy objects in the pool. Just set them as inactive.
-		foreach (var enemy in enemyBulletPool)
+		foreach (var enemy in m_EnemyBulletPool)
 		{
 			if (enemy != null)
 			{
@@ -76,8 +93,8 @@ public class GameController : MonoBehaviour
 			}
 		}
 
-		shieldMeterRef.transform.localScale.Set(shieldMeterFullSize.x, shieldMeterFullSize.y, shieldMeterFullSize.z);
-		shieldMeterRef.transform.position = shieldMeterDefaultPosition;
+		ShieldMeterRef.transform.localScale.Set(shieldMeterFullSize.x, shieldMeterFullSize.y, shieldMeterFullSize.z);
+		ShieldMeterRef.transform.position = shieldMeterDefaultPosition;
 	}
 	
 	/// <summary>
@@ -93,35 +110,35 @@ public class GameController : MonoBehaviour
 		}
 
 		//Is player alive?
-		if (playerRef.activeSelf)
+		if (PlayerRef.activeSelf)
 		{
 			SetOverlayVisibility(false);
 
 			//Shield animation and status.
-			if (!playerScript.ShieldActive)
+			if (!m_PlayerScript.ShieldActive)
 			{
-				float ratio = (Time.time - playerScript.ShieldDeactivateTime) / (playerScript.ShieldReactivateTime - playerScript.ShieldDeactivateTime);
-				shieldMeterRef.transform.localScale =  new Vector3( shieldMeterFullSize.x * ratio, shieldMeterFullSize.y, shieldMeterFullSize.z );
-				shieldMeterRef.transform.position = new Vector3(shieldMeterDefaultPosition.x + (shieldMeterRef.transform.localScale.x * 0.5f) - (shieldMeterFullSize.x * 0.5f),
+				float ratio = (Time.time - m_PlayerScript.ShieldDeactivateTime) / (m_PlayerScript.ShieldReactivateTime - m_PlayerScript.ShieldDeactivateTime);
+				ShieldMeterRef.transform.localScale =  new Vector3( shieldMeterFullSize.x * ratio, shieldMeterFullSize.y, shieldMeterFullSize.z );
+				ShieldMeterRef.transform.position = new Vector3(shieldMeterDefaultPosition.x + (ShieldMeterRef.transform.localScale.x * 0.5f) - (shieldMeterFullSize.x * 0.5f),
 																shieldMeterDefaultPosition.y,
 																shieldMeterDefaultPosition.z
 																);
-				shieldMeterRef.GetComponent<Renderer>().material.color = new Color( 1.0f, 0.0f, 0.0f);
+				ShieldMeterRef.GetComponent<Renderer>().material.color = new Color( 1.0f, 0.0f, 0.0f);
 			}
 			else
 			{
-				shieldMeterRef.transform.localScale = shieldMeterFullSize;
-				shieldMeterRef.GetComponent<Renderer>().material.color = new Color( 0.0f, 1.0f, 0.0f);
+				ShieldMeterRef.transform.localScale = shieldMeterFullSize;
+				ShieldMeterRef.GetComponent<Renderer>().material.color = new Color( 0.0f, 1.0f, 0.0f);
 			}
 
-			scoreRef.GetComponent<GUIText>().text = score.ToString();
+			ScoreRef.GetComponent<GUIText>().text = m_Score.ToString();
 
 			SpawnEnemies();
 		}
 		else
 		{
 			//Show the start screen.
-			highScore = Mathf.Max( score, highScore );
+			m_HighScore = Mathf.Max( m_Score, m_HighScore );
 			SetOverlayVisibility(true);
 
 #if UNITY_ANDROID
@@ -142,31 +159,31 @@ public class GameController : MonoBehaviour
 	private void  SetOverlayVisibility( bool isVisable )
 	{
 		//Start screen asssets and game UI should be mutually exclusive.
-		logoRef.GetComponent<Renderer>().enabled = isVisable;
-		howToPlayRef.SetActive(isVisable);
+		LogoRef.GetComponent<Renderer>().enabled = isVisable;
+		HowToPlayRef.SetActive(isVisable);
 
-		scoreRef.SetActive(!isVisable);
-		shieldMeterRef.SetActive(!isVisable);
+		ScoreRef.SetActive(!isVisable);
+		ShieldMeterRef.SetActive(!isVisable);
 
 		//Only show the rest of the detils we we have them.
-		if (score != -1)
+		if (m_Score != -1)
 		{
-			prevScoreRef.GetComponent<GUIText>().text = GameSettings.PREVIOUS_SCORE_TEXT + score.ToString();
-			prevScoreRef.GetComponent<GUIText>().enabled = isVisable;
+			PrevScoreRef.GetComponent<GUIText>().text = PreviousScoreText + m_Score.ToString();
+			PrevScoreRef.GetComponent<GUIText>().enabled = isVisable;
 		}
 		else
 		{
-			prevScoreRef.GetComponent<GUIText>().enabled = false;
+			PrevScoreRef.GetComponent<GUIText>().enabled = false;
 		}
 
-		if (highScore != -1)
+		if (m_HighScore != -1)
 		{
-			highScoreRef.GetComponent<GUIText>().text = GameSettings.HIGH_SCORE_TEXT + highScore.ToString();
-			highScoreRef.GetComponent<GUIText>().enabled = isVisable;
+			HighScoreRef.GetComponent<GUIText>().text = HighScoreText + m_HighScore.ToString();
+			HighScoreRef.GetComponent<GUIText>().enabled = isVisable;
 		}
 		else
 		{
-			highScoreRef.GetComponent<GUIText>().enabled = false;
+			HighScoreRef.GetComponent<GUIText>().enabled = false;
 		}
 	}
 
@@ -175,18 +192,18 @@ public class GameController : MonoBehaviour
 	/// </summary>
 	private void SpawnEnemies()
 	{
-		if (Time.time > nextSpawnTime)
+		if (Time.time > m_NextSpawnTime)
 		{
-			if (Random.value <= GameSettings.SHOTGUN_CHANCE)
+			if (Random.value <= ShotgunChancePercentage)
 			{
-				SpawnCluster("shotgun");
+				SpawnCluster(ClusterType.SHOTGUN);
 			}
 			else
 			{
-				SpawnCluster("pulse");
+				SpawnCluster(ClusterType.PULSE);
 			}
 
-			nextSpawnTime = Time.time + Random.Range(GameSettings.ENEMY_RATE_OF_SPAWN_MIN, GameSettings.ENEMY_RATE_OF_SPAWN_MAX);
+			m_NextSpawnTime = Time.time + Random.Range(MinEnemySpawmRate, MaxEnemySpawnRate);
 		}
 	}
 
@@ -194,16 +211,16 @@ public class GameController : MonoBehaviour
 	/// Spawns a cluster of enemies dependant on type.
 	/// 	/// </summary>
 	/// <param name="typeID"></param>
-	private void SpawnCluster( string typeID )
+	private void SpawnCluster(ClusterType type)
 	{
 		GameObject[] bulletsToSpawn;
-		Vector2 spawnCenter = new Vector2( Random.Range(spawnPostionMin.x,spawnPostionMax.x), Random.Range(spawnPostionMin.y, spawnPostionMax.y));
+		Vector2 spawnCenter = new Vector2( Random.Range(SpawnPostionMin.x,SpawnPostionMax.x), Random.Range(SpawnPostionMin.y, SpawnPostionMax.y));
 		Vector2 fireDirection;
 
-		switch (typeID)
+		switch (type)
 		{
 			//Bunch of shots that spread outwards like a shot gun.
-			case "shotgun":
+			case ClusterType.SHOTGUN:
 				bulletsToSpawn = RequestBulletsFromPool(10);
 
 				foreach (var spawn in bulletsToSpawn)
@@ -211,26 +228,26 @@ public class GameController : MonoBehaviour
 					if (spawn != null)
 					{
 						//From center point, targetted slightly to the left or right of the player.
-						fireDirection = new Vector2( Random.Range(playerTransform.position.x - GameSettings.SHOTGUN_SPREAD, playerTransform.position.x + GameSettings.SHOTGUN_SPREAD),
-													 playerTransform.position.y
+						fireDirection = new Vector2( Random.Range(m_PlayerTransform.position.x - ShotgunSpread, m_PlayerTransform.position.x + ShotgunSpread),
+													 m_PlayerTransform.position.y
 												   );
 						fireDirection = fireDirection - spawnCenter;
 						fireDirection.Normalize();
 
-						spawn.GetComponent<EnemyShot>().Reset( spawnCenter, fireDirection, Random.Range(GameSettings.ENEMY_SPEED_MIN, GameSettings.ENEMY_SPEED_MAX) );
+						spawn.GetComponent<EnemyShot>().Reset( spawnCenter, fireDirection, Random.Range(MinEnemySpeed, MaxEnemySpeed) );
 					}
 				}
 				break;
 			
 			//Shots fly from center point out in an evenly distributed arc.
-			case "pulse":
+			case ClusterType.PULSE:
 				int numShotsInPulse = 9;
 				bulletsToSpawn = RequestBulletsFromPool(numShotsInPulse);
 				fireDirection = -Vector2.up;
 
 				//Calculate the angular separation of each bullet.
-				float degreesPerShot = GameSettings.PULSE_SPREAD / (numShotsInPulse - 1);
-				Quaternion tempRotation = Quaternion.AngleAxis( -GameSettings.PULSE_SPREAD * 0.5f, Vector3.forward ); //Creates a rotation around the vector that is facing the camera.
+				float degreesPerShot = PulseSpread / (numShotsInPulse - 1);
+				Quaternion tempRotation = Quaternion.AngleAxis( -PulseSpread * 0.5f, Vector3.forward ); //Creates a rotation around the vector that is facing the camera.
 				fireDirection = tempRotation * fireDirection; //Start point of the arc shaped pulse.
 				tempRotation = Quaternion.AngleAxis( degreesPerShot, Vector3.forward ); //Rotation to alter each time.
 
@@ -238,7 +255,7 @@ public class GameController : MonoBehaviour
 				{
 					if (spawn != null)
 					{
-						spawn.GetComponent<EnemyShot>().Reset( spawnCenter, fireDirection, GameSettings.ENEMY_SPEED_MIN );
+						spawn.GetComponent<EnemyShot>().Reset( spawnCenter, fireDirection, MinEnemySpeed );
 					}
 
 					fireDirection = tempRotation * fireDirection;
@@ -266,13 +283,13 @@ public class GameController : MonoBehaviour
 		GameObject[] bulletAllocation = new GameObject[numberOfBullets];
 		int numberAllocated = 0;
 
-		for (int bulletID = 0; bulletID < enemyBulletPool.Length; bulletID++)
+		for (int bulletID = 0; bulletID < m_EnemyBulletPool.Length; bulletID++)
 		{
-			if (enemyBulletPool[bulletID] != null)
+			if (m_EnemyBulletPool[bulletID] != null)
 			{
-				if (enemyBulletPool[bulletID].activeSelf == false) //Inactive bullets are available for reuse.
+				if (m_EnemyBulletPool[bulletID].activeSelf == false) //Inactive bullets are available for reuse.
 				{
-					bulletAllocation[numberAllocated++] = enemyBulletPool[bulletID];
+					bulletAllocation[numberAllocated++] = m_EnemyBulletPool[bulletID];
 					if (numberAllocated == numberOfBullets)
 					{
 						break;
@@ -288,12 +305,12 @@ public class GameController : MonoBehaviour
 		}
 
 		//Need to create the rest.
-		for (int bulletID = 0; bulletID < enemyBulletPool.Length; bulletID++)
+		for (int bulletID = 0; bulletID < m_EnemyBulletPool.Length; bulletID++)
 		{
-			if (enemyBulletPool[bulletID] == null)
+			if (m_EnemyBulletPool[bulletID] == null)
 			{
-				enemyBulletPool[bulletID] = (GameObject)Instantiate(enemyShot, transform.position, Quaternion.identity);
-				bulletAllocation[numberAllocated++] = enemyBulletPool[bulletID];
+				m_EnemyBulletPool[bulletID] = (GameObject)Instantiate(EnemyShot, transform.position, Quaternion.identity);
+				bulletAllocation[numberAllocated++] = m_EnemyBulletPool[bulletID];
 				if (numberAllocated == numberOfBullets)
 				{
 					return bulletAllocation;
@@ -312,9 +329,9 @@ public class GameController : MonoBehaviour
 	private void ScoreHit()
 	{
 		//Check here because other wise player can score with bullets that are loose after death.
-		if (playerRef.activeSelf)
+		if (PlayerRef.activeSelf)
 		{
-			score++;
+			m_Score++;
 		}
 	}
 }

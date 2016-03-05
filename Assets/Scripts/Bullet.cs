@@ -1,17 +1,20 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
+using System;
 
 /// <summary>
 /// Class script for a player bullet. Handles movement and collision.
 /// </summary>
 public class Bullet : MonoBehaviour
 {
-	public delegate void OnHit();
-	public event OnHit onHitEvent;
+	public float StandardSpeed = 10.0f;
+	public float SuperSpeed = 8.0f;
 
-	public bool isSuper;
+	public event Action OnHitEventHandler;
 
-	private float speed;
+	public bool IsSuper;
+
+	private float m_Speed;
 
 #region Private member functions.
 	/// <summary>
@@ -19,13 +22,13 @@ public class Bullet : MonoBehaviour
 	/// </summary>
 	private void Start ()
 	{
-		if (isSuper)
+		if (IsSuper)
 		{
-			speed = 8.0f;
+			m_Speed = SuperSpeed;
 		}
 		else
 		{
-			speed = 10.0f;
+			m_Speed = StandardSpeed;
 		}
 
 	}
@@ -37,7 +40,7 @@ public class Bullet : MonoBehaviour
 	{
 		if (gameObject.activeSelf)
 		{
-			transform.Translate(0.0f, speed * Time.deltaTime, 0.0f);
+			transform.Translate(0.0f, m_Speed * Time.deltaTime, 0.0f);
 		}
 	}
 
@@ -50,17 +53,17 @@ public class Bullet : MonoBehaviour
 	{
 		if (coll.tag == "EnemyBullet")
 		{
-			//Kill kill both unless this is a super bullet.
-			if (!isSuper)
+			//Kill both unless this is a super bullet.
+			if (!IsSuper)
 			{
 				gameObject.SetActive(false);
 			}
 
 			coll.gameObject.SetActive(false);
 
-			if (onHitEvent != null)
+			if (OnHitEventHandler != null)
 			{
-				onHitEvent();
+				OnHitEventHandler();
 			}
 		}
 	}
