@@ -11,7 +11,7 @@ public class GameController : MonoBehaviour
 
 	public GameObject playerRef;
 	public GameObject howToPlayRef;
-    public GameObject logoRef;
+	public GameObject logoRef;
 	public GameObject scoreRef;
 	public GameObject prevScoreRef;
 	public GameObject highScoreRef;
@@ -48,8 +48,8 @@ public class GameController : MonoBehaviour
 		playerTransform = playerRef.transform;
 		playerScript = playerRef.GetComponent<Player>();
 
-        //Start the player dead and the logo visible.
-        playerRef.SetActive(false);
+		//Start the player dead and the logo visible.
+		playerRef.SetActive(false);
 		playerRef.GetComponent<Player>().onRegisterHit += ScoreHit;
 
 		shieldMeterFullSize = shieldMeterRef.transform.localScale;
@@ -62,30 +62,30 @@ public class GameController : MonoBehaviour
 	/// <summary>
 	/// Reset all elements in the game. Genarally used when we want to begin a new game.
 	/// </summary>
-   	private void ResetGame()
-    {
+	private void ResetGame()
+	{
 		score = 0;
-        playerRef.GetComponent<Player>().Reset();
+		playerRef.GetComponent<Player>().Reset();
 
-        //No need to destroy objects in the pool. Just set them as inactive.
-        foreach (var enemy in enemyBulletPool)
-        {
-            if (enemy != null)
-            {
-                enemy.SetActive(false);
-            }
-        }
+		//No need to destroy objects in the pool. Just set them as inactive.
+		foreach (var enemy in enemyBulletPool)
+		{
+			if (enemy != null)
+			{
+				enemy.SetActive(false);
+			}
+		}
 
 		shieldMeterRef.transform.localScale.Set(shieldMeterFullSize.x, shieldMeterFullSize.y, shieldMeterFullSize.z);
 		shieldMeterRef.transform.position = shieldMeterDefaultPosition;
-    }
+	}
 	
 	/// <summary>
 	/// Update function used by Unity.
 	/// </summary>
 	private void Update ()
 	{
-        //Quit?
+		//Quit?
 		if ( Input.GetKeyDown(KeyCode.Escape) )
 		{
 			Application.Quit();
@@ -93,8 +93,8 @@ public class GameController : MonoBehaviour
 		}
 
 		//Is player alive?
-        if (playerRef.activeSelf)
-        {
+		if (playerRef.activeSelf)
+		{
 			SetOverlayVisibility(false);
 
 			//Shield animation and status.
@@ -103,9 +103,9 @@ public class GameController : MonoBehaviour
 				float ratio = (Time.time - playerScript.ShieldDeactivateTime) / (playerScript.ShieldReactivateTime - playerScript.ShieldDeactivateTime);
 				shieldMeterRef.transform.localScale =  new Vector3( shieldMeterFullSize.x * ratio, shieldMeterFullSize.y, shieldMeterFullSize.z );
 				shieldMeterRef.transform.position = new Vector3(shieldMeterDefaultPosition.x + (shieldMeterRef.transform.localScale.x * 0.5f) - (shieldMeterFullSize.x * 0.5f),
-				                                                shieldMeterDefaultPosition.y,
-				                                                shieldMeterDefaultPosition.z
-				                                                );
+																shieldMeterDefaultPosition.y,
+																shieldMeterDefaultPosition.z
+																);
 				shieldMeterRef.GetComponent<Renderer>().material.color = new Color( 1.0f, 0.0f, 0.0f);
 			}
 			else
@@ -117,9 +117,9 @@ public class GameController : MonoBehaviour
 			scoreRef.GetComponent<GUIText>().text = score.ToString();
 
 			SpawnEnemies();
-        }
+		}
 		else
-        {
+		{
 			//Show the start screen.
 			highScore = Mathf.Max( score, highScore );
 			SetOverlayVisibility(true);
@@ -129,10 +129,10 @@ public class GameController : MonoBehaviour
 #else
 			if ( Input.GetKeyDown(KeyCode.R) )
 #endif
-            {
-                ResetGame();
-            }
-        }
+			{
+				ResetGame();
+			}
+		}
 	}
 
 	/// <summary>
@@ -212,8 +212,8 @@ public class GameController : MonoBehaviour
 					{
 						//From center point, targetted slightly to the left or right of the player.
 						fireDirection = new Vector2( Random.Range(playerTransform.position.x - GameSettings.SHOTGUN_SPREAD, playerTransform.position.x + GameSettings.SHOTGUN_SPREAD),
-						                             playerTransform.position.y
-						                           );
+													 playerTransform.position.y
+												   );
 						fireDirection = fireDirection - spawnCenter;
 						fireDirection.Normalize();
 

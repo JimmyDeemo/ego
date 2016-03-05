@@ -8,11 +8,11 @@ using System.Collections;
 /// </summary>
 public class GameArea : MonoBehaviour
 {
-    /// <summary>
-    /// Trigger function called by Unity when the game area detects an object
-    /// has exited it's bounds.
-    /// </summary>
-    /// <param name="coll">Collision object of the 2D game object that has left the area.</param>
+	/// <summary>
+	/// Trigger function called by Unity when the game area detects an object
+	/// has exited it's bounds.
+	/// </summary>
+	/// <param name="coll">Collision object of the 2D game object that has left the area.</param>
 	private void OnTriggerExit2D(Collider2D coll)
 	{
 		//Identify those that need destroying.

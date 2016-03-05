@@ -11,21 +11,21 @@ public class Bullet : MonoBehaviour
 
 	public bool isSuper;
 
-    private float speed;
+	private float speed;
 
 #region Private member functions.
 	/// <summary>
 	/// Initialisation function used by Unity.
 	/// </summary>
 	private void Start ()
-    {
+	{
 		if (isSuper)
 		{
 			speed = 8.0f;
 		}
 		else
 		{
-        	speed = 10.0f;
+			speed = 10.0f;
 		}
 
 	}
@@ -33,19 +33,19 @@ public class Bullet : MonoBehaviour
 	/// <summary>
 	/// Update function used by Unity.
 	/// </summary>
-    private void Update()
-    {
-        if (gameObject.activeSelf)
-        {
-            transform.Translate(0.0f, speed * Time.deltaTime, 0.0f);
-        }
+	private void Update()
+	{
+		if (gameObject.activeSelf)
+		{
+			transform.Translate(0.0f, speed * Time.deltaTime, 0.0f);
+		}
 	}
 
-    /// <summary>
-    /// Trigger function used by Unity. Called when this objects collides with
-    /// another 2D object set as a 'Trigger'.
-    /// </summary>
-    /// <param name="coll">Collider2D reference of the object that has collided with this one.</param>
+	/// <summary>
+	/// Trigger function used by Unity. Called when this objects collides with
+	/// another 2D object set as a 'Trigger'.
+	/// </summary>
+	/// <param name="coll">Collider2D reference of the object that has collided with this one.</param>
 	private void OnTriggerEnter2D(Collider2D coll)
 	{
 		if (coll.tag == "EnemyBullet")
@@ -67,15 +67,15 @@ public class Bullet : MonoBehaviour
 #endregion
 
 #region Public member functions
-    /// <summary>
-    /// Reset this bullet to a new starting position and sets it to active.
-    /// Primarily used by anything that pools bullet objects, e.g. Player.
-    /// </summary>
-    /// <param name="startPosition">The new position for this object to start at.</param>
-    public void Reset(Vector3 startPosition)
-    {
-        transform.position = startPosition;
-        gameObject.SetActive(true);
-    }
+	/// <summary>
+	/// Reset this bullet to a new starting position and sets it to active.
+	/// Primarily used by anything that pools bullet objects, e.g. Player.
+	/// </summary>
+	/// <param name="startPosition">The new position for this object to start at.</param>
+	public void Reset(Vector3 startPosition)
+	{
+		transform.position = startPosition;
+		gameObject.SetActive(true);
+	}
 #endregion
 }

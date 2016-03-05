@@ -15,15 +15,15 @@ public class Player : MonoBehaviour
 #endregion
 
 #region Public member variables.
-    private float speed;
-    private float verticalMovement;
-    private float horizontalMovement;
+	private float speed;
+	private float verticalMovement;
+	private float horizontalMovement;
    
-    private GameObject[] bulletPool;
+	private GameObject[] bulletPool;
 	private float nextFireTime;
 
-    private Vector3 spawnPosition;
-    private Vector3 spawnScale;
+	private Vector3 spawnPosition;
+	private Vector3 spawnScale;
 
 	private bool shieldActive;
 	private float shieldReactivateTime;
@@ -60,19 +60,19 @@ public class Player : MonoBehaviour
 	/// Initialisation function used by Unity.
 	/// </summary>
 	private void Start ()
-    {
-        speed = 5.0f;
+	{
+		speed = 5.0f;
 
-        bulletPool = new GameObject[GameSettings.PLAYER_BULLET_POOL_SIZE];
+		bulletPool = new GameObject[GameSettings.PLAYER_BULLET_POOL_SIZE];
 
 		nextFireTime = Time.time + GameSettings.PLAYER_RATE_OF_FIRE;
 
 		SetShieldActive(true);
 
-        //Could hard code these but take them from the scene view in case they get
-        //modified there.
+		//Could hard code these but take them from the scene view in case they get
+		//modified there.
 		spawnPosition = transform.position;
-        spawnScale = transform.localScale;
+		spawnScale = transform.localScale;
 	}
 
 	/// <summary>
@@ -240,21 +240,21 @@ public class Player : MonoBehaviour
 	/// </summary>
 	public void Reset()
 	{
-        transform.position = spawnPosition;
-        transform.localScale = spawnScale;
+		transform.position = spawnPosition;
+		transform.localScale = spawnScale;
 
 		//Unlikely that bullets would still be active but just in case.
-        foreach (var bullet in bulletPool)
-        {
-            if (bullet != null)
-            {
-                bullet.SetActive(false);
-            }
-        }
+		foreach (var bullet in bulletPool)
+		{
+			if (bullet != null)
+			{
+				bullet.SetActive(false);
+			}
+		}
 
 		SetShieldActive(true);
 
-        gameObject.SetActive(true);
+		gameObject.SetActive(true);
 	}
 #endregion
 }
