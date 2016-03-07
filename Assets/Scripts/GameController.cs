@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections;
-using UnityEditor;
 
 public class GameController : Singleton<GameController>
 {
@@ -43,7 +42,6 @@ public class GameController : Singleton<GameController>
 	private int m_Score;
 	private int m_HighScore;
 
-	private Transform m_PlayerTransform;
 	private Player m_PlayerScript;
 
 	private float m_NextSpawnTime;
@@ -72,7 +70,6 @@ public class GameController : Singleton<GameController>
 		m_EnemyBulletPool = new GameObject[EnemyBulletPoolSize];
 		m_NextSpawnTime = Time.time;
 
-		m_PlayerTransform = PlayerRef.transform;
 		m_PlayerScript = PlayerRef.GetComponent<Player>();
 
 		//Start the player dead and the logo visible.
@@ -207,7 +204,7 @@ public class GameController : Singleton<GameController>
 			int enemyIndex = Random.Range(0, EnemyPrefabs.Length);
 			GameObject prefab = EnemyPrefabs[enemyIndex];
 			Vector2 spawnCenter = new Vector2(Random.Range(SpawnArea.xMin, SpawnArea.xMax), Random.Range(SpawnArea.yMin, SpawnArea.yMax));
-			GameObject enemyGO = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
+			GameObject enemyGO = Instantiate(prefab) as GameObject;
 			enemyGO.transform.position = spawnCenter;
 			enemyGO.SetActive(true);
 

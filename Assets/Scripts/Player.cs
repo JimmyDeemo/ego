@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections;
-using UnityEditor;
 using System;
 
 /// <summary>
@@ -148,7 +147,7 @@ public class Player : MonoBehaviour
 		
 		for (int i = 0; i < numToSpawn; i++)
 		{
-			GameObject superShotGO = PrefabUtility.InstantiatePrefab(SuperShotPrefab) as GameObject;
+			GameObject superShotGO = Instantiate(SuperShotPrefab) as GameObject;
 			Vector3 position = transform.position;
 			position.x = position.x - (playerWidth * 0.5f) + (i * xSeparation);
 			superShotGO.transform.position = position;
@@ -191,7 +190,7 @@ public class Player : MonoBehaviour
 			Bullet bullet = m_BulletPool[bulletID];
 			if (bullet == null)
 			{
-				GameObject bulletGO = PrefabUtility.InstantiatePrefab(ShotPrefab) as GameObject;
+				GameObject bulletGO = Instantiate(ShotPrefab) as GameObject;
 				bulletGO.transform.position = firePosition;
 				bulletGO.transform.rotation = transform.rotation;
 				bullet = bulletGO.GetComponent<Bullet>();
