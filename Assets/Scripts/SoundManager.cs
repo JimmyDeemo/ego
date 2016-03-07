@@ -12,6 +12,8 @@ public class SoundManager : MonoBehaviour
 	public AudioClip shieldUp;
 	public AudioClip lose;
 
+	public AudioSource AudioSource;
+
 	private static SoundManager instance;
 	public static SoundManager Instance
 	{
@@ -32,7 +34,7 @@ public class SoundManager : MonoBehaviour
 	{
 		instance = this;
 
-		audio.volume = 0.8f;
+		AudioSource.volume = 0.8f;
 	}
 
 	/// <summary>
@@ -40,7 +42,7 @@ public class SoundManager : MonoBehaviour
 	/// </summary>
 	public void ShootSound()
 	{
-		audio.PlayOneShot(playerShoot);
+		AudioSource.PlayOneShot(playerShoot);
 	}
 
 	/// <summary>
@@ -48,7 +50,7 @@ public class SoundManager : MonoBehaviour
 	/// </summary>
 	public void SuperShot()
 	{
-		audio.PlayOneShot(superShot);
+		AudioSource.PlayOneShot(superShot);
 	}
 
 	/// <summary>
@@ -56,7 +58,7 @@ public class SoundManager : MonoBehaviour
 	/// </summary>
 	public void ShieldDown()
 	{
-		audio.PlayOneShot(shieldDown);
+		AudioSource.PlayOneShot(shieldDown);
 	}
 
 	/// <summary>
@@ -64,7 +66,7 @@ public class SoundManager : MonoBehaviour
 	/// </summary>
 	public void ShieldUp()
 	{
-		audio.PlayOneShot(shieldUp);
+		AudioSource.PlayOneShot(shieldUp);
 	}
 
 	/// <summary>
@@ -72,6 +74,6 @@ public class SoundManager : MonoBehaviour
 	/// </summary>
 	public void Lose()
 	{
-		audio.PlayOneShot(lose);
+		AudioSource.PlayOneShot(lose);
 	}
 }
