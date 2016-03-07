@@ -1,16 +1,17 @@
 using UnityEngine;
 using System.Collections;
+using UnityEditor;
 
-public class GameController : MonoBehaviour
+public class GameController : Singleton<GameController>
 {
 	public enum ClusterType { SHOTGUN, PULSE };
 
-#region Public member variables.
+	#region Public member variables.
 	public float ShotgunChancePercentage = 0.5f;
-		   
+
 	public float ShotgunSpread = 3.0f;
 	public float PulseSpread = 110.0f; //In degrees.
-		   
+
 	public int EnemyBulletPoolSize = 100;
 	public float MinEnemySpawmRate = 0.5f; //In seconds.
 	public float MaxEnemySpawnRate = 1.0f; //In seconds.
@@ -20,9 +21,10 @@ public class GameController : MonoBehaviour
 	public string PreviousScoreText = "Score last game: ";
 	public string HighScoreText = "Highest Score: ";
 
+	public GameObject[] EnemyPrefabs;
+
 	public GameObject EnemyShot;
-	public Vector2 SpawnPostionMin;
-	public Vector2 SpawnPostionMax;
+	public Rect SpawnArea;
 
 	//TODO: Dear lord the GO references!? This stinks of too much being in the controller; these need pulling out.
 	public GameObject PlayerRef;
@@ -35,9 +37,9 @@ public class GameController : MonoBehaviour
 
 	public Vector3 shieldMeterFullSize;
 	public Vector3 shieldMeterDefaultPosition;
-#endregion
+	#endregion
 
-#region Private member variables.
+	#region Private member variables.
 	private int m_Score;
 	private int m_HighScore;
 
@@ -46,16 +48,24 @@ public class GameController : MonoBehaviour
 
 	private float m_NextSpawnTime;
 
-	private GameObject[] m_EnemyBulletPool;
-#endregion
+	private static GameObject[] m_EnemyBulletPool;
+	#endregion
+
+	public Player Player
+	{
+		get
+		{
+			return m_PlayerScript;
+		}
+	}
 
 	/// <summary>
 	/// Initialisation function used by Unity.
 	/// </summary>
-	private void Start ()
+	private void Start()
 	{
 #if UNITY_ANDROID
-		//TODO: Remove his GetComponent.
+		//TODO: Remove this GetComponent.
 		HowToPlayRef.GetComponent<GUIText>().text = "Touch (and hold) screen to start.";
 #endif
 
@@ -96,14 +106,14 @@ public class GameController : MonoBehaviour
 		ShieldMeterRef.transform.localScale.Set(shieldMeterFullSize.x, shieldMeterFullSize.y, shieldMeterFullSize.z);
 		ShieldMeterRef.transform.position = shieldMeterDefaultPosition;
 	}
-	
+
 	/// <summary>
 	/// Update function used by Unity.
 	/// </summary>
-	private void Update ()
+	private void Update()
 	{
 		//Quit?
-		if ( Input.GetKeyDown(KeyCode.Escape) )
+		if (Input.GetKeyDown(KeyCode.Escape))
 		{
 			Application.Quit();
 			return;
@@ -118,17 +128,17 @@ public class GameController : MonoBehaviour
 			if (!m_PlayerScript.ShieldActive)
 			{
 				float ratio = (Time.time - m_PlayerScript.ShieldDeactivateTime) / (m_PlayerScript.ShieldReactivateTime - m_PlayerScript.ShieldDeactivateTime);
-				ShieldMeterRef.transform.localScale =  new Vector3( shieldMeterFullSize.x * ratio, shieldMeterFullSize.y, shieldMeterFullSize.z );
+				ShieldMeterRef.transform.localScale = new Vector3(shieldMeterFullSize.x * ratio, shieldMeterFullSize.y, shieldMeterFullSize.z);
 				ShieldMeterRef.transform.position = new Vector3(shieldMeterDefaultPosition.x + (ShieldMeterRef.transform.localScale.x * 0.5f) - (shieldMeterFullSize.x * 0.5f),
 																shieldMeterDefaultPosition.y,
 																shieldMeterDefaultPosition.z
 																);
-				ShieldMeterRef.GetComponent<Renderer>().material.color = new Color( 1.0f, 0.0f, 0.0f);
+				ShieldMeterRef.GetComponent<Renderer>().material.color = new Color(1.0f, 0.0f, 0.0f);
 			}
 			else
 			{
 				ShieldMeterRef.transform.localScale = shieldMeterFullSize;
-				ShieldMeterRef.GetComponent<Renderer>().material.color = new Color( 0.0f, 1.0f, 0.0f);
+				ShieldMeterRef.GetComponent<Renderer>().material.color = new Color(0.0f, 1.0f, 0.0f);
 			}
 
 			ScoreRef.GetComponent<GUIText>().text = m_Score.ToString();
@@ -138,13 +148,13 @@ public class GameController : MonoBehaviour
 		else
 		{
 			//Show the start screen.
-			m_HighScore = Mathf.Max( m_Score, m_HighScore );
+			m_HighScore = Mathf.Max(m_Score, m_HighScore);
 			SetOverlayVisibility(true);
 
 #if UNITY_ANDROID
 			if ( Input.GetMouseButtonDown( 0 ) )
 #else
-			if ( Input.GetKeyDown(KeyCode.R) )
+			if (Input.GetKeyDown(KeyCode.R))
 #endif
 			{
 				ResetGame();
@@ -156,7 +166,7 @@ public class GameController : MonoBehaviour
 	/// Sets whether or not we can see the start screen assets or not. Shows/Hides the game logo as well as the last game's score and the current high score.
 	/// </summary>
 	/// <param name="isVisable">If set to <c>true</c> is visable.</param>
-	private void  SetOverlayVisibility( bool isVisable )
+	private void SetOverlayVisibility(bool isVisable)
 	{
 		//Start screen asssets and game UI should be mutually exclusive.
 		LogoRef.GetComponent<Renderer>().enabled = isVisable;
@@ -194,76 +204,14 @@ public class GameController : MonoBehaviour
 	{
 		if (Time.time > m_NextSpawnTime)
 		{
-			if (Random.value <= ShotgunChancePercentage)
-			{
-				SpawnCluster(ClusterType.SHOTGUN);
-			}
-			else
-			{
-				SpawnCluster(ClusterType.PULSE);
-			}
+			int enemyIndex = Random.Range(0, EnemyPrefabs.Length);
+			GameObject prefab = EnemyPrefabs[enemyIndex];
+			Vector2 spawnCenter = new Vector2(Random.Range(SpawnArea.xMin, SpawnArea.xMax), Random.Range(SpawnArea.yMin, SpawnArea.yMax));
+			GameObject enemyGO = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
+			enemyGO.transform.position = spawnCenter;
+			enemyGO.SetActive(true);
 
 			m_NextSpawnTime = Time.time + Random.Range(MinEnemySpawmRate, MaxEnemySpawnRate);
-		}
-	}
-
-	/// <summary>
-	/// Spawns a cluster of enemies dependant on type.
-	/// 	/// </summary>
-	/// <param name="typeID"></param>
-	private void SpawnCluster(ClusterType type)
-	{
-		GameObject[] bulletsToSpawn;
-		Vector2 spawnCenter = new Vector2( Random.Range(SpawnPostionMin.x,SpawnPostionMax.x), Random.Range(SpawnPostionMin.y, SpawnPostionMax.y));
-		Vector2 fireDirection;
-
-		switch (type)
-		{
-			//Bunch of shots that spread outwards like a shot gun.
-			case ClusterType.SHOTGUN:
-				bulletsToSpawn = RequestBulletsFromPool(10);
-
-				foreach (var spawn in bulletsToSpawn)
-				{
-					if (spawn != null)
-					{
-						//From center point, targetted slightly to the left or right of the player.
-						fireDirection = new Vector2( Random.Range(m_PlayerTransform.position.x - ShotgunSpread, m_PlayerTransform.position.x + ShotgunSpread),
-													 m_PlayerTransform.position.y
-												   );
-						fireDirection = fireDirection - spawnCenter;
-						fireDirection.Normalize();
-
-						spawn.GetComponent<EnemyShot>().Reset( spawnCenter, fireDirection, Random.Range(MinEnemySpeed, MaxEnemySpeed) );
-					}
-				}
-				break;
-			
-			//Shots fly from center point out in an evenly distributed arc.
-			case ClusterType.PULSE:
-				int numShotsInPulse = 9;
-				bulletsToSpawn = RequestBulletsFromPool(numShotsInPulse);
-				fireDirection = -Vector2.up;
-
-				//Calculate the angular separation of each bullet.
-				float degreesPerShot = PulseSpread / (numShotsInPulse - 1);
-				Quaternion tempRotation = Quaternion.AngleAxis( -PulseSpread * 0.5f, Vector3.forward ); //Creates a rotation around the vector that is facing the camera.
-				fireDirection = tempRotation * fireDirection; //Start point of the arc shaped pulse.
-				tempRotation = Quaternion.AngleAxis( degreesPerShot, Vector3.forward ); //Rotation to alter each time.
-
-				foreach (var spawn in bulletsToSpawn)
-				{
-					if (spawn != null)
-					{
-						spawn.GetComponent<EnemyShot>().Reset( spawnCenter, fireDirection, MinEnemySpeed );
-					}
-
-					fireDirection = tempRotation * fireDirection;
-				}
-				break;
-
-			default:
-				break;
 		}
 	}
 
@@ -272,7 +220,7 @@ public class GameController : MonoBehaviour
 	/// </summary>
 	/// <returns>The bullet objects requested.</returns>
 	/// <param name="numberOfBullets">Number of bullets needed.</param>
-	private GameObject[] RequestBulletsFromPool(int numberOfBullets)
+	public GameObject[] RequestBulletsFromPool(int numberOfBullets)
 	{
 		//Lets clamp so we know that we always need at least one.
 		if (numberOfBullets <= 0)
@@ -333,5 +281,11 @@ public class GameController : MonoBehaviour
 		{
 			m_Score++;
 		}
+	}
+
+	public void OnDrawGizmos()
+	{
+		Gizmos.color = Color.green;
+		Gizmos.DrawWireCube(SpawnArea.center, SpawnArea.size);
 	}
 }
