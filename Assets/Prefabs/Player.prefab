@@ -106,6 +106,7 @@ MonoBehaviour:
   GunSeparation: 0.3
   ShieldRechargeTime: 6
   SuperShotRatio: 4
+  Speed: 5
   ShotPrefab: {fileID: 100000, guid: 3f7dc0ccb7d68dc4ebdba1e5be8ab72c, type: 2}
   SuperShotPrefab: {fileID: 100000, guid: 8ad58312e5daaef4583492aa2775462c, type: 2}
 --- !u!212 &21202558

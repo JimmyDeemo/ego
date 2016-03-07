@@ -22,6 +22,8 @@ public class Player : MonoBehaviour
 	[Tooltip("Per multiples of scale, how many shots shall we spawn for super shots?")]
 	public int SuperShotRatio = 4; //Per multiples of scale.
 
+	public float Speed = 5f;
+
 	[Header("References")]
 	public GameObject ShotPrefab;
 	public GameObject SuperShotPrefab;
@@ -105,8 +107,8 @@ public class Player : MonoBehaviour
 		pos.z = transform.position.z - Camera.main.transform.position.z;
 		transform.position = Camera.main.ScreenToWorldPoint( pos ); 
 #else
-		verticalMovement = Input.GetAxis("Vertical") * speed * Time.deltaTime;
-		horizontalMovement = Input.GetAxis("Horizontal") * speed * Time.deltaTime;
+		float verticalMovement = Input.GetAxis("Vertical") * Speed * Time.deltaTime;
+		float horizontalMovement = Input.GetAxis("Horizontal") * Speed * Time.deltaTime;
 
 		transform.Translate(horizontalMovement, verticalMovement, 0.0f);
 #endif
@@ -151,6 +153,9 @@ public class Player : MonoBehaviour
 			position.x = position.x - (playerWidth * 0.5f) + (i * xSeparation);
 			superShotGO.transform.position = position;
 			superShotGO.transform.rotation = transform.rotation;
+
+			Bullet superBullet = superShotGO.GetComponent<Bullet>();
+			superBullet.IsSuper = true;
 		}
 		
 		SoundManager.Instance.SuperShot();
