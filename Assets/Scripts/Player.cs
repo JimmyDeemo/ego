@@ -3,7 +3,7 @@ using System.Collections;
 using System;
 
 /// <summary>
-/// Script attached to the Player GameObject. Handles player movement and fireing.
+/// Script attached to the Player GameObject. Handles player movement and firing.
 /// </summary>
 public class Player : MonoBehaviour
 {
@@ -150,8 +150,7 @@ public class Player : MonoBehaviour
 			GameObject superShotGO = Instantiate(SuperShotPrefab) as GameObject;
 			Vector3 position = transform.position;
 			position.x = position.x - (playerWidth * 0.5f) + (i * xSeparation);
-			superShotGO.transform.position = position;
-			superShotGO.transform.rotation = transform.rotation;
+			superShotGO.transform.SetPositionAndRotation(position, transform.rotation);
 
 			Bullet superBullet = superShotGO.GetComponent<Bullet>();
 			superBullet.IsSuper = true;
@@ -177,7 +176,7 @@ public class Player : MonoBehaviour
 			{
 				if (!bullet.gameObject.activeSelf)
 				{
-					bullet.Reset(firePosition);
+					bullet.Reinit(firePosition);
 					SoundManager.Instance.ShootSound();
 					return;
 				}
@@ -191,8 +190,7 @@ public class Player : MonoBehaviour
 			if (bullet == null)
 			{
 				GameObject bulletGO = Instantiate(ShotPrefab) as GameObject;
-				bulletGO.transform.position = firePosition;
-				bulletGO.transform.rotation = transform.rotation;
+				bulletGO.transform.SetPositionAndRotation(firePosition, transform.rotation);
 				bullet = bulletGO.GetComponent<Bullet>();
 				bullet.OnHitEventHandler += RegisterHit;
 				SoundManager.Instance.ShootSound();
@@ -209,7 +207,7 @@ public class Player : MonoBehaviour
 	/// <param name="coll">The collider object of the game object that the player has collided with.</param>
 	private void OnTriggerEnter2D(Collider2D coll)
 	{
-		if (coll.tag == "EnemyBullet")
+		if (coll.CompareTag("EnemyBullet"))
 		{
 			if (m_ShieldActive)
 			{

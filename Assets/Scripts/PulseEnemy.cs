@@ -43,7 +43,7 @@ public class PulseEnemy : Enemy
 		{
 			if (spawn != null)
 			{
-				spawn.GetComponent<EnemyShot>().Reset(spawnCenter, fireDirection, Speed);
+				spawn.GetComponent<EnemyShot>().Reinit(spawnCenter, fireDirection, Speed);
 			}
 
 			fireDirection = tempRotation * fireDirection;

@@ -16,9 +16,9 @@ public class GameArea : MonoBehaviour
 	private void OnTriggerExit2D(Collider2D coll)
 	{
 		//Identify those that need destroying.
-		if (coll.gameObject.tag == "PlayerBullet" || coll.gameObject.tag == "EnemyBullet")
+		if (coll.gameObject.CompareTag("PlayerBullet") || coll.gameObject.CompareTag("EnemyBullet"))
 		{
-			if (coll.gameObject.tag == "PlayerBullet" && coll.gameObject.GetComponent<Bullet>().IsSuper)
+			if (coll.gameObject.CompareTag("PlayerBullet") && coll.gameObject.GetComponent<Bullet>().IsSuper)
 			{
 				//Super shots are not pooled.
 				Destroy(coll.gameObject);

@@ -41,10 +41,10 @@ public class ShotgunEnemy : Enemy
 				fireDirection = new Vector2(Random.Range(m_PlayerTransform.position.x - ShotgunSpread, m_PlayerTransform.position.x + ShotgunSpread),
 											 m_PlayerTransform.position.y
 										   );
-				fireDirection = fireDirection - spawnCenter;
+				fireDirection -= spawnCenter;
 				fireDirection.Normalize();
 
-				spawn.GetComponent<EnemyShot>().Reset(spawnCenter, fireDirection, Random.Range(BulletSpeedMin, BulletSpeedMax));
+				spawn.GetComponent<EnemyShot>().Reinit(spawnCenter, fireDirection, Random.Range(BulletSpeedMin, BulletSpeedMax));
 			}
 		}
 	}

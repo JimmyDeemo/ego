@@ -11,13 +11,6 @@ public class EnemyShot : MonoBehaviour
 
 #region Private member functions.
 	/// <summary>
-	/// Initialisation function used by Unity.
-	/// </summary>
-	private void Start ()
-	{
-	}
-
-	/// <summary>
 	/// Update function used by Unity.
 	/// </summary>
 	private void Update ()
@@ -32,7 +25,7 @@ public class EnemyShot : MonoBehaviour
 	/// <param name="startPosition">Start position.</param>
 	/// <param name="newDirection">New direction. Note: Function assumes that this is a unit vector.</param>
 	/// <param name="newSpeed">New speed.</param>
-	public void Reset(Vector2 startPosition, Vector2 newDirection, float newSpeed)
+	public void Reinit(Vector2 startPosition, Vector2 newDirection, float newSpeed)
 	{
 		speed = newSpeed;
 		transform.position = startPosition;
