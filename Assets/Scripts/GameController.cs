@@ -1,5 +1,5 @@
 using UnityEngine;
-using System.Collections;
+using UnityEngine.UI;
 
 public class GameController : Singleton<GameController>
 {
@@ -12,7 +12,7 @@ public class GameController : Singleton<GameController>
 	public float PulseSpread = 110.0f; //In degrees.
 
 	public int EnemyBulletPoolSize = 100;
-	public float MinEnemySpawmRate = 0.5f; //In seconds.
+	public float MinEnemySpawnRate = 0.5f; //In seconds.
 	public float MaxEnemySpawnRate = 1.0f; //In seconds.
 	public float MinEnemySpeed = 2.0f;
 	public float MaxEnemySpeed = 3.0f;
@@ -29,8 +29,8 @@ public class GameController : Singleton<GameController>
 	public GameObject PlayerRef;
 	public GameObject HowToPlayRef;
 	public GameObject LogoRef;
-	public GameObject ScoreRef;
-	public GameObject PrevScoreRef;
+	public Text ScoreText;
+	public Text PrevScoreText;
 	public GameObject HighScoreRef;
 	public GameObject ShieldMeterRef;
 
@@ -84,7 +84,7 @@ public class GameController : Singleton<GameController>
 	}
 
 	/// <summary>
-	/// Reset all elements in the game. Genarally used when we want to begin a new game.
+	/// Reset all elements in the game. Generally used when we want to begin a new game.
 	/// </summary>
 	private void ResetGame()
 	{
@@ -138,7 +138,7 @@ public class GameController : Singleton<GameController>
 				ShieldMeterRef.GetComponent<Renderer>().material.color = new Color(0.0f, 1.0f, 0.0f);
 			}
 
-			ScoreRef.GetComponent<GUIText>().text = m_Score.ToString();
+			ScoreText.text = m_Score.ToString();
 
 			SpawnEnemies();
 		}
@@ -169,28 +169,28 @@ public class GameController : Singleton<GameController>
 		LogoRef.GetComponent<Renderer>().enabled = isVisable;
 		HowToPlayRef.SetActive(isVisable);
 
-		ScoreRef.SetActive(!isVisable);
+		ScoreText.gameObject.SetActive(!isVisable);
 		ShieldMeterRef.SetActive(!isVisable);
 
 		//Only show the rest of the detils we we have them.
 		if (m_Score != -1)
 		{
-			PrevScoreRef.GetComponent<GUIText>().text = PreviousScoreText + m_Score.ToString();
-			PrevScoreRef.GetComponent<GUIText>().enabled = isVisable;
+			PrevScoreText.text = PreviousScoreText + m_Score.ToString();
+			PrevScoreText.enabled = isVisable;
 		}
 		else
 		{
-			PrevScoreRef.GetComponent<GUIText>().enabled = false;
+			PrevScoreText.enabled = false;
 		}
 
 		if (m_HighScore != -1)
 		{
-			HighScoreRef.GetComponent<GUIText>().text = HighScoreText + m_HighScore.ToString();
-			HighScoreRef.GetComponent<GUIText>().enabled = isVisable;
+			PrevScoreText.text = HighScoreText + m_HighScore.ToString();
+			PrevScoreText.enabled = isVisable;
 		}
 		else
 		{
-			HighScoreRef.GetComponent<GUIText>().enabled = false;
+			PrevScoreText.enabled = false;
 		}
 	}
 
@@ -203,12 +203,12 @@ public class GameController : Singleton<GameController>
 		{
 			int enemyIndex = Random.Range(0, EnemyPrefabs.Length);
 			GameObject prefab = EnemyPrefabs[enemyIndex];
-			Vector2 spawnCenter = new Vector2(Random.Range(SpawnArea.xMin, SpawnArea.xMax), Random.Range(SpawnArea.yMin, SpawnArea.yMax));
-			GameObject enemyGO = Instantiate(prefab) as GameObject;
+			Vector2 spawnCenter = new(Random.Range(SpawnArea.xMin, SpawnArea.xMax), Random.Range(SpawnArea.yMin, SpawnArea.yMax));
+			GameObject enemyGO = Instantiate(prefab);
 			enemyGO.transform.position = spawnCenter;
 			enemyGO.SetActive(true);
 
-			m_NextSpawnTime = Time.time + Random.Range(MinEnemySpawmRate, MaxEnemySpawnRate);
+			m_NextSpawnTime = Time.time + Random.Range(MinEnemySpawnRate, MaxEnemySpawnRate);
 		}
 	}
 

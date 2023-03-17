@@ -51,7 +51,7 @@ public class Bullet : MonoBehaviour
 	/// <param name="coll">Collider2D reference of the object that has collided with this one.</param>
 	private void OnTriggerEnter2D(Collider2D coll)
 	{
-		if (coll.tag == "EnemyBullet")
+		if (coll.CompareTag("EnemyBullet"))
 		{
 			//Kill both unless this is a super bullet.
 			if (!IsSuper)
@@ -61,10 +61,7 @@ public class Bullet : MonoBehaviour
 
 			coll.gameObject.SetActive(false);
 
-			if (OnHitEventHandler != null)
-			{
-				OnHitEventHandler();
-			}
+			OnHitEventHandler?.Invoke();
 		}
 	}
 #endregion
@@ -75,7 +72,7 @@ public class Bullet : MonoBehaviour
 	/// Primarily used by anything that pools bullet objects, e.g. Player.
 	/// </summary>
 	/// <param name="startPosition">The new position for this object to start at.</param>
-	public void Reset(Vector3 startPosition)
+	public void Reinit(Vector3 startPosition)
 	{
 		transform.position = startPosition;
 		gameObject.SetActive(true);
