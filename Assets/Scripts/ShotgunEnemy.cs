@@ -31,7 +31,7 @@ public class ShotgunEnemy : Enemy
 		Vector2 spawnCenter = transform.position;
 		Vector2 fireDirection;
 
-		bulletsToSpawn = GameController.Instance.RequestBulletsFromPool(BulletsInBurst);
+		bulletsToSpawn = m_BulletManager.RequestBulletsFromPool(BulletsInBurst);
 
 		foreach (var spawn in bulletsToSpawn)
 		{

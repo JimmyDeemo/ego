@@ -10320,8 +10320,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1001072190}
   - component: {fileID: 1001072189}
+  - component: {fileID: 1001072191}
   m_Layer: 0
-  m_Name: Game Controller
+  m_Name: MainController
   m_TagString: GameController
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10342,7 +10343,6 @@ MonoBehaviour:
   ShotgunChancePercentage: 0.5
   ShotgunSpread: 3
   PulseSpread: 110
-  EnemyBulletPoolSize: 100
   MinEnemySpawnRate: 0.5
   MaxEnemySpawnRate: 1
   MinEnemySpeed: 2
@@ -10350,9 +10350,8 @@ MonoBehaviour:
   PreviousScoreText: 'Score last game: '
   HighScoreText: 'Highest Score: '
   EnemyPrefabs:
-  - {fileID: 162154, guid: 542e2b9d18bf1cf41a06d3642552d109, type: 3}
-  - {fileID: 178800, guid: 790ab42fd426bd14e983425acc249f82, type: 3}
-  EnemyShot: {fileID: 100000, guid: c15d7dd315229a04a92d1ed886762edc, type: 3}
+  - {fileID: 11460762, guid: 790ab42fd426bd14e983425acc249f82, type: 3}
+  - {fileID: 11446216, guid: 542e2b9d18bf1cf41a06d3642552d109, type: 3}
   SpawnArea:
     serializedVersion: 2
     x: -4.25
@@ -10383,6 +10382,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1001072191
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1001072188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1045ef38731af4f37b71edc4d24003e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BulletPrefab: {fileID: 100000, guid: c15d7dd315229a04a92d1ed886762edc, type: 3}
+  BulletParent: {fileID: 1689814577}
+  EnemyBulletPoolSize: 100
 --- !u!1 &1049042808
 GameObject:
   m_ObjectHideFlags: 0
@@ -10447,7 +10461,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1049042808}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.016113281}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 9, y: 16, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -10645,6 +10659,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2130100605}
   m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1689814576
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1689814577}
+  m_Layer: 0
+  m_Name: EnemyBullets
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1689814577
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1689814576}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1802232874
 GameObject:

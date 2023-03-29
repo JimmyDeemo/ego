@@ -30,7 +30,7 @@ public class PulseEnemy : Enemy
 		Vector2 spawnCenter = transform.position;
 		Vector2 fireDirection;
 
-		bulletsToSpawn = GameController.Instance.RequestBulletsFromPool(BulletsInPulse);
+		bulletsToSpawn = m_BulletManager.RequestBulletsFromPool(BulletsInPulse);
 		fireDirection = -Vector2.up;
 
 		//Calculate the angular separation of each bullet.
