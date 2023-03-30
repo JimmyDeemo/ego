@@ -15652,10 +15652,6 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 11445276, guid: efcfe257e8b838b4482b254130d9dce9, type: 3}
-      propertyPath: RateOfFire
-      value: 2
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: efcfe257e8b838b4482b254130d9dce9, type: 3}
 --- !u!1 &2130100603
