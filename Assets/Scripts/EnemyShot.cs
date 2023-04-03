@@ -9,13 +9,15 @@ public class EnemyShot : MonoBehaviour
 	private Vector3 direction;
 	private float speed;
 
-#region Private member functions.
+	private Quaternion rotationToDirection = new Quaternion();
+
+#region Private member functions.W
 	/// <summary>
 	/// Update function used by Unity.
 	/// </summary>
 	private void Update ()
 	{
-		transform.Translate (direction * (speed * Time.deltaTime));
+		transform.position += (direction * (speed * Time.deltaTime));
 	}
 #endregion
 
@@ -30,6 +32,10 @@ public class EnemyShot : MonoBehaviour
 		speed = newSpeed;
 		transform.position = startPosition;
 		direction = newDirection;
+
+		rotationToDirection.SetFromToRotation(Vector2.down, direction);
+		transform.rotation = rotationToDirection;
+
 		gameObject.SetActive(true);
 	}
 }

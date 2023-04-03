@@ -23,7 +23,6 @@ public class GameController : Singleton<GameController>
 
 	public Rect SpawnArea;
 
-	//TODO: Dear lord the GO references!? This stinks of too much being in the controller; these need pulling out.
 	public GameObject PlayerRef;
 	public GameObject HowToPlayRef;
 	public GameObject LogoRef;
