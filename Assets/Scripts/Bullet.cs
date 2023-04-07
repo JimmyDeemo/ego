@@ -5,8 +5,9 @@ using System;
 /// <summary>
 /// Class script for a player bullet. Handles movement and collision.
 /// </summary>
-public class Bullet : MonoBehaviour
+public class Bullet : MonoBehaviour, IManagedBullet
 {
+	new private Rigidbody2D rigidbody;
 	public float StandardSpeed = 10.0f;
 	public float SuperSpeed = 8.0f;
 
@@ -16,11 +17,12 @@ public class Bullet : MonoBehaviour
 
 	private float m_Speed;
 
-#region Private member functions.
-	/// <summary>
-	/// Initialisation function used by Unity.
-	/// </summary>
-	private void Start ()
+    private void Awake()
+    {
+		rigidbody = GetComponent<Rigidbody2D>();
+    }
+
+    private void Start ()
 	{
 		if (IsSuper)
 		{
@@ -31,17 +33,6 @@ public class Bullet : MonoBehaviour
 			m_Speed = StandardSpeed;
 		}
 
-	}
-	
-	/// <summary>
-	/// Update function used by Unity.
-	/// </summary>
-	private void Update()
-	{
-		if (gameObject.activeSelf)
-		{
-			transform.Translate(0.0f, m_Speed * Time.deltaTime, 0.0f);
-		}
 	}
 
 	/// <summary>
@@ -64,18 +55,35 @@ public class Bullet : MonoBehaviour
 			OnHitEventHandler?.Invoke();
 		}
 	}
-#endregion
 
-#region Public member functions
 	/// <summary>
 	/// Reset this bullet to a new starting position and sets it to active.
 	/// Primarily used by anything that pools bullet objects, e.g. Player.
 	/// </summary>
 	/// <param name="startPosition">The new position for this object to start at.</param>
-	public void Reinit(Vector3 startPosition)
+	public void Reinit(Vector3 startPosition, Quaternion rotation)
 	{
-		transform.position = startPosition;
+		transform.SetPositionAndRotation(startPosition, rotation);
 		gameObject.SetActive(true);
 	}
-#endregion
+
+	public void Poll()
+	{
+		rigidbody.transform.position += Vector3.up * (m_Speed * Time.deltaTime);
+	}
+
+	public void Disable()
+    {
+		gameObject.SetActive(false);
+    }
+
+	public bool IsAvailable()
+    {
+		return !gameObject.activeSelf;
+    }
+
+	public void SetParent(Transform parent)
+    {
+		transform.parent = parent;
+    }
 }

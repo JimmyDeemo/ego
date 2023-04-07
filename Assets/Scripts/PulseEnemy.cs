@@ -26,11 +26,11 @@ public class PulseEnemy : Enemy
 
 	private void FirePulse()
 	{
-		GameObject[] bulletsToSpawn;
+		EnemyShot[] bulletsToSpawn;
 		Vector2 spawnCenter = transform.position;
 		Vector2 fireDirection;
 
-		bulletsToSpawn = m_BulletManager.RequestBulletsFromPool(BulletsInPulse);
+		bulletsToSpawn = m_BulletManager.RequestBulletsFromPool<EnemyShot>(BulletsInPulse);
 		fireDirection = -Vector2.up;
 
 		//Calculate the angular separation of each bullet.
@@ -41,10 +41,7 @@ public class PulseEnemy : Enemy
 
 		foreach (var spawn in bulletsToSpawn)
 		{
-			if (spawn != null)
-			{
-				spawn.GetComponent<EnemyShot>().Reinit(spawnCenter, fireDirection, Speed);
-			}
+			spawn.Reinit(spawnCenter, fireDirection, Speed);
 
 			fireDirection = tempRotation * fireDirection;
 		}

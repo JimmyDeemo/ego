@@ -27,11 +27,11 @@ public class ShotgunEnemy : Enemy
 
 	private void FireBurst()
 	{
-		GameObject[] bulletsToSpawn;
+		EnemyShot[] bulletsToSpawn;
 		Vector2 spawnCenter = transform.position;
 		Vector2 fireDirection;
 
-		bulletsToSpawn = m_BulletManager.RequestBulletsFromPool(BulletsInBurst);
+		bulletsToSpawn = m_BulletManager.RequestBulletsFromPool<EnemyShot>(BulletsInBurst);
 
 		foreach (var spawn in bulletsToSpawn)
 		{
@@ -44,7 +44,7 @@ public class ShotgunEnemy : Enemy
 				fireDirection -= spawnCenter;
 				fireDirection.Normalize();
 
-				spawn.GetComponent<EnemyShot>().Reinit(spawnCenter, fireDirection, Random.Range(BulletSpeedMin, BulletSpeedMax));
+				spawn.Reinit(spawnCenter, fireDirection, Random.Range(BulletSpeedMin, BulletSpeedMax));
 			}
 		}
 	}

@@ -11,8 +11,6 @@ public class Player : MonoBehaviour
 	[Header("Settings")]
 	[Tooltip("How fast in seconds can the player fire.")]
 	public float RateOfFire = 0.2f; //In seconds.
-	[Tooltip("Max size of the bullet pool.")]
-	public int BulletPoolSize = 40;
 	[Range(1f, 1.5f), Tooltip("How much should the player grow with each hit?.")]
 	public float ScaleFactor = 1.0015f;
 	[Tooltip("Distance between the shot origins.")]
@@ -24,14 +22,12 @@ public class Player : MonoBehaviour
 	public float Speed = 5f;
 
 	[Header("References")]
-	public GameObject ShotPrefab;
-	public GameObject SuperShotPrefab;
+	public Bullet SuperShotPrefab;
 
 	public event Action HitRegisteredEventHandler;
-#endregion
+	#endregion
 
-#region Public member variables.
-	private Bullet[] m_BulletPool;
+	private BulletManager m_BulletManager;
 	private float m_NextFireTime;
 
 	private Vector3 m_SpawnPosition;
@@ -39,7 +35,6 @@ public class Player : MonoBehaviour
 
 	private bool m_ShieldActive;
 	private float m_ShieldReactivateTime;
-#endregion
 
 #region Properties.
 	public bool ShieldActive
@@ -65,16 +60,19 @@ public class Player : MonoBehaviour
 			return m_ShieldReactivateTime - ShieldRechargeTime;
 		}
 	}
-#endregion
 
-#region Private member functions.
-	/// <summary>
-	/// Initialisation function used by Unity.
-	/// </summary>
-	private void Start ()
+    internal void Init(BulletManager manager)
+    {
+		m_BulletManager = manager;
+    }
+    #endregion
+
+    #region Private member functions.
+    /// <summary>
+    /// Initialisation function used by Unity.
+    /// </summary>
+    private void Start ()
 	{
-		m_BulletPool = new Bullet[BulletPoolSize];
-
 		m_NextFireTime = Time.timeSinceLevelLoad + RateOfFire;
 
 		SetShieldActive(true);
@@ -121,8 +119,9 @@ public class Player : MonoBehaviour
 		//Firing.
 		if ( Input.GetButton("Fire1") && Time.time > m_NextFireTime )
 		{
-			FireBullet(GunSeparation);
-			FireBullet(-GunSeparation);
+			Bullet[] bullets = m_BulletManager.RequestBulletsFromPool<Bullet>(2);
+			FireBullet(bullets[0], GunSeparation);
+			FireBullet(bullets[1], -GunSeparation);
 			m_NextFireTime = Time.time + RateOfFire;
 		}
 		
@@ -147,13 +146,11 @@ public class Player : MonoBehaviour
 		
 		for (int i = 0; i < numToSpawn; i++)
 		{
-			GameObject superShotGO = Instantiate(SuperShotPrefab) as GameObject;
+			Bullet bullet = Instantiate(SuperShotPrefab);
 			Vector3 position = transform.position;
 			position.x = position.x - (playerWidth * 0.5f) + (i * xSeparation);
-			superShotGO.transform.SetPositionAndRotation(position, transform.rotation);
-
-			Bullet superBullet = superShotGO.GetComponent<Bullet>();
-			superBullet.IsSuper = true;
+			bullet.transform.SetPositionAndRotation(position, transform.rotation);
+			bullet.IsSuper = true;
 		}
 		
 		SoundManager.Instance.SuperShot();
@@ -163,42 +160,15 @@ public class Player : MonoBehaviour
 	/// Shooty bangs!
 	/// </summary>
 	/// <param name="positionOffset">Horizontal distance from the central firing point.</param>
-	private void FireBullet(float positionOffset)
+	private void FireBullet(Bullet bullet, float positionOffset)
 	{
 		Vector3 firePosition = transform.position;
 		firePosition.x += positionOffset;
 
-		//Use a free bullet from the pool.
-		for (int bulletID = 0; bulletID < m_BulletPool.Length; bulletID++)
-		{
-			Bullet bullet = m_BulletPool[bulletID];
-			if (bullet != null)
-			{
-				if (!bullet.gameObject.activeSelf)
-				{
-					bullet.Reinit(firePosition);
-					SoundManager.Instance.ShootSound();
-					return;
-				}
-			}
-		}
-		
-		//No free bullet, try to make one.
-		for (int bulletID = 0; bulletID < m_BulletPool.Length; bulletID++)
-		{
-			Bullet bullet = m_BulletPool[bulletID];
-			if (bullet == null)
-			{
-				GameObject bulletGO = Instantiate(ShotPrefab) as GameObject;
-				bulletGO.transform.SetPositionAndRotation(firePosition, transform.rotation);
-				bullet = bulletGO.GetComponent<Bullet>();
-				bullet.OnHitEventHandler += RegisterHit;
-				SoundManager.Instance.ShootSound();
-				return;
-			}
-		}
-		
-		Debug.LogWarning("Player bullet pool full!");
+		bullet.Reinit(firePosition, transform.rotation);
+		bullet.OnHitEventHandler -= RegisterHit;
+		bullet.OnHitEventHandler += RegisterHit;
+		SoundManager.Instance.ShootSound();
 	}
 
 	/// <summary>
@@ -207,19 +177,22 @@ public class Player : MonoBehaviour
 	/// <param name="coll">The collider object of the game object that the player has collided with.</param>
 	private void OnTriggerEnter2D(Collider2D coll)
 	{
-		if (coll.CompareTag("EnemyBullet"))
-		{
-			if (m_ShieldActive)
-			{
-				SetShieldActive(false);
-				coll.gameObject.SetActive(false);
-			}
-			else
-			{
-				SoundManager.Instance.Lose();
-				gameObject.SetActive(false);
-			}
-		}
+		//TEMP: Comment out the player collision code for testing.
+
+
+		//if (coll.CompareTag("EnemyBullet"))
+		//{
+		//	if (m_ShieldActive)
+		//	{
+		//		SetShieldActive(false);
+		//		coll.gameObject.SetActive(false);
+		//	}
+		//	else
+		//	{
+		//		SoundManager.Instance.Lose();
+		//		gameObject.SetActive(false);
+		//	}
+		//}
 	}
 
 	/// <summary>
@@ -263,16 +236,6 @@ public class Player : MonoBehaviour
 	{
 		transform.position = m_SpawnPosition;
 		transform.localScale = m_SpawnScale;
-
-		//Unlikely that bullets would still be active but just in case.
-		for (int bulletID = 0; bulletID < m_BulletPool.Length; bulletID++)
-		{
-			Bullet bullet = m_BulletPool[bulletID];
-			if (bullet != null)
-			{
-				bullet.gameObject.SetActive(false);
-			}
-		}
 
 		SetShieldActive(true);
 

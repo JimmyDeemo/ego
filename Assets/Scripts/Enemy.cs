@@ -6,7 +6,7 @@ public abstract class Enemy : MonoBehaviour
 	public string ExitAnimatorParameterName = "Exit";
 
 	protected Animator m_Animator;
-	protected EnemyBulletManager m_BulletManager;
+	protected BulletManager m_BulletManager;
 
 	private int m_ExitHash;
 
@@ -24,7 +24,7 @@ public abstract class Enemy : MonoBehaviour
 		m_ExitHash = Animator.StringToHash(ExitAnimatorParameterName);
 	}
 
-	public void Init(EnemyBulletManager manager)
+	public void Init(BulletManager manager)
     {
 		m_BulletManager = manager;
     }

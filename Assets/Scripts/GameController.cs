@@ -44,7 +44,7 @@ public class GameController : Singleton<GameController>
 	private float m_NextSpawnTime;
 #endregion
 
-	private EnemyBulletManager m_EnemyBulletManger;
+	private BulletManager m_BulletManager;
 
 	public Player Player
 	{
@@ -56,7 +56,7 @@ public class GameController : Singleton<GameController>
 
 	private void Awake()
 	{
-		m_EnemyBulletManger = GetComponent<EnemyBulletManager>();
+		m_BulletManager = GetComponent<BulletManager>();
 	}
 
 	/// <summary>
@@ -72,6 +72,7 @@ public class GameController : Singleton<GameController>
 		m_NextSpawnTime = Time.time;
 
 		m_PlayerScript = PlayerRef.GetComponent<Player>();
+		m_PlayerScript.Init(m_BulletManager);
 
 		//Start the player dead and the logo visible.
 		PlayerRef.SetActive(false);
@@ -197,7 +198,7 @@ public class GameController : Singleton<GameController>
 			Enemy prefab = EnemyPrefabs[enemyIndex];
 			Vector2 spawnCenter = new(Random.Range(SpawnArea.xMin, SpawnArea.xMax), Random.Range(SpawnArea.yMin, SpawnArea.yMax));
 			Enemy enemy = Instantiate(prefab);
-			enemy.Init(m_EnemyBulletManger);
+			enemy.Init(m_BulletManager);
 			enemy.transform.position = spawnCenter;
 			enemy.gameObject.SetActive(true);
 

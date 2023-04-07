@@ -1,3 +1,27 @@
+# Ego
+
+Ego is a hobby game project, written in Unity, to act as a demonstration of my knowledge of Unity's APIs and development process.
+
+# How to play
+## Controls
+| Action | Key |
+|--------|-----|
+| Start Game | 'R' Key |
+| Movement| WASD or Arrow Keys|
+| Fire | Space Bar |
+| Super Shot | Release 'Space Bar'
+
+## Gameplay
+
+Negate enemy fire using your own bullets. As you score hits your craft will grow larger, earning points but making it difficult to manouver through the enemy fire. You have a shield that will absorb the impact of one bullet, but will then need time to recharge. If you let go of the 'Fire' button it will consume your shield and launch a 'Super Shot' to help clear a path. You cannot use 'Super Shot' if you shield is recharging.
+
+## Notable Elements
+
+### C# Usage
+- Generics - See `RequestBulletsFromPool` in `Assets/Scripts/BulletManager.cs`.
+
+---
+OLD
 # EGO v0.2.0
 
 Changes from v0.1.1 to v0.2.0

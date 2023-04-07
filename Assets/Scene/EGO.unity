@@ -10343,8 +10343,8 @@ MonoBehaviour:
   ShotgunChancePercentage: 0.5
   ShotgunSpread: 3
   PulseSpread: 110
-  MinEnemySpawnRate: 0.5
-  MaxEnemySpawnRate: 1
+  MinEnemySpawnRate: 0.1
+  MaxEnemySpawnRate: 0.2
   MinEnemySpeed: 2
   MaxEnemySpeed: 3
   PreviousScoreText: 'Score last game: '
@@ -10394,9 +10394,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1045ef38731af4f37b71edc4d24003e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BulletPrefab: {fileID: 100000, guid: c15d7dd315229a04a92d1ed886762edc, type: 3}
+  BulletPrefab: {fileID: 11400000, guid: 3f7dc0ccb7d68dc4ebdba1e5be8ab72c, type: 3}
+  ShotPrefab: {fileID: 11400000, guid: c15d7dd315229a04a92d1ed886762edc, type: 3}
   BulletParent: {fileID: 1689814577}
-  EnemyBulletPoolSize: 100
+  BulletPoolSize: 200000
 --- !u!1 &1049042808
 GameObject:
   m_ObjectHideFlags: 0
@@ -15652,6 +15653,11 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 11445276, guid: efcfe257e8b838b4482b254130d9dce9, type: 3}
+      propertyPath: SuperShotPrefab
+      value: 
+      objectReference: {fileID: 11400000, guid: 8ad58312e5daaef4583492aa2775462c,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: efcfe257e8b838b4482b254130d9dce9, type: 3}
 --- !u!1 &2130100603
