@@ -152,6 +152,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ExitAnimatorParameterName: Exit
-  BulletsInPulse: 100
+  BulletsInPulse: 10
   PulseSpread: 110
   Speed: 2

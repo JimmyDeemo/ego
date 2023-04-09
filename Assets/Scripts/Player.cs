@@ -143,14 +143,14 @@ public class Player : MonoBehaviour
 		int numToSpawn = Mathf.CeilToInt( SuperShotRatio * ( transform.localScale.x / m_SpawnScale.x ) );
 		float playerWidth = GetComponent<SpriteRenderer>().bounds.size.x;
 		float xSeparation = playerWidth / numToSpawn;
-		
+
+		SuperBullet[] superBullets = m_BulletManager.RequestBulletsFromPool<SuperBullet>(numToSpawn);
 		for (int i = 0; i < numToSpawn; i++)
 		{
-			Bullet bullet = Instantiate(SuperShotPrefab);
+			SuperBullet currentBullet = superBullets[i];
 			Vector3 position = transform.position;
 			position.x = position.x - (playerWidth * 0.5f) + (i * xSeparation);
-			bullet.transform.SetPositionAndRotation(position, transform.rotation);
-			bullet.IsSuper = true;
+			currentBullet.transform.SetPositionAndRotation(position, transform.rotation);
 		}
 		
 		SoundManager.Instance.SuperShot();

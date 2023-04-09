@@ -5,7 +5,7 @@ using System;
 /// <summary>
 /// Class script for a player bullet. Handles movement and collision.
 /// </summary>
-public class Bullet : MonoBehaviour, IManagedBullet
+public class SuperBullet : MonoBehaviour, IManagedBullet
 {
 	public event Action OnHitEventHandler;
 
@@ -29,8 +29,6 @@ public class Bullet : MonoBehaviour, IManagedBullet
 	{
 		if (coll.CompareTag("EnemyBullet"))
 		{
-			gameObject.SetActive(false);
-
 			coll.gameObject.SetActive(false);
 
 			OnHitEventHandler?.Invoke();

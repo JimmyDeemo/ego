@@ -143,14 +143,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19b79f8fc821e3d4ca2cd34d3b63d669, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RateOfFire: 0.2
-  BulletPoolSize: 40
+  RateOfFire: 0.1
   ScaleFactor: 1.0015
   GunSeparation: 0.3
   ShieldRechargeTime: 6
   SuperShotRatio: 4
   Speed: 5
-  ShotPrefab: {fileID: 100000, guid: 3f7dc0ccb7d68dc4ebdba1e5be8ab72c, type: 3}
   SuperShotPrefab: {fileID: 100000, guid: 8ad58312e5daaef4583492aa2775462c, type: 3}
 --- !u!1 &138164
 GameObject:

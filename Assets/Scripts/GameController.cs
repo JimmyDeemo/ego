@@ -65,9 +65,10 @@ public class GameController : Singleton<GameController>
 	private void Start()
 	{
 #if UNITY_ANDROID
-		//TODO: Remove this GetComponent.
 		HowToPlayRef.GetComponent<GUIText>().text = "Touch (and hold) screen to start.";
 #endif
+
+		m_BulletManager.enabled = false;
 
 		m_NextSpawnTime = Time.time;
 
@@ -95,6 +96,8 @@ public class GameController : Singleton<GameController>
 
 		ShieldMeterRef.transform.localScale.Set(shieldMeterFullSize.x, shieldMeterFullSize.y, shieldMeterFullSize.z);
 		ShieldMeterRef.transform.position = shieldMeterDefaultPosition;
+
+		m_BulletManager.enabled = true;
 	}
 
 	/// <summary>
@@ -144,7 +147,7 @@ public class GameController : Singleton<GameController>
 #if UNITY_ANDROID
 			if ( Input.GetMouseButtonDown( 0 ) )
 #else
-			if (Input.GetKeyDown(KeyCode.R))
+			if (Input.GetKeyDown(KeyCode.Space))
 #endif
 			{
 				ResetGame();
@@ -220,7 +223,11 @@ public class GameController : Singleton<GameController>
 
 	public void OnDrawGizmos()
 	{
+		var prevColour = Gizmos.color;
+
 		Gizmos.color = Color.green;
 		Gizmos.DrawWireCube(SpawnArea.center, SpawnArea.size);
+
+		Gizmos.color = prevColour;
 	}
 }

@@ -6,20 +6,22 @@ using System.Collections;
 /// </summary>
 public class EnemyShot : MonoBehaviour, IManagedBullet
 {
-	new private Rigidbody2D rigidbody;
+	private Transform m_Transform;
 	private Vector3 direction;
 	private float speed;
 
 	private Quaternion rotationToDirection = new Quaternion();
 
+	public Vector3 Position { get { return m_Transform.position; } }
+
     private void Awake()
     {
-		rigidbody = GetComponent<Rigidbody2D>();
+		m_Transform = GetComponent<Rigidbody2D>().transform;
     }
 
     public void Poll()
 	{
-		rigidbody.transform.position += direction * (speed * Time.deltaTime);
+		m_Transform.position += direction * (speed * Time.deltaTime);
 	}
 
     public void Disable()
@@ -27,9 +29,9 @@ public class EnemyShot : MonoBehaviour, IManagedBullet
 		gameObject.SetActive(false);
     }
 
-	public bool IsAvailable()
+	public bool IsActive()
     {
-		return !gameObject.activeSelf;
+		return gameObject.activeSelf;
     }
 
 	public void SetParent(Transform parent)

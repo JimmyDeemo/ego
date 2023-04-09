@@ -10,36 +10,56 @@ public class BulletManager : MonoBehaviour
     };
 
 	public Bullet BulletPrefab;
+	public SuperBullet SuperBulletPrefab;
 	public EnemyShot ShotPrefab;
 
 	public Transform BulletParent;
 	[FormerlySerializedAs("EnemyBulletPoolSize")]
 	public int BulletPoolSize = 100;
 
-    private static IManagedBullet[] m_EnemyBulletPool;
+	private Camera m_MainCamera;
 
-    // Use this for initialization
+    private IManagedBullet[] m_EnemyBulletPool;
+
+    private void Awake()
+    {
+		m_MainCamera = Camera.main;
+    }
+
     private void Start()
     {
         m_EnemyBulletPool = new IManagedBullet[BulletPoolSize];
     }
 
-	/// <summary>
-	/// Update function used by Unity.
-	/// </summary>
 	private void Update()
 	{
-        for (int i = 0; i < BulletPoolSize; i++)
-        {
-			if (m_EnemyBulletPool[i] != null)
+		foreach (var bullet in m_EnemyBulletPool)
+		{
+			if (bullet != null && bullet.IsActive())
 			{
-				m_EnemyBulletPool[i].Poll();
+				bullet.Poll();
 			}
         }
 	}
 
-	#region Public API
-	public void Reset()
+    private void LateUpdate()
+    {
+		foreach (var bullet in m_EnemyBulletPool)
+		{
+			if (bullet != null && bullet.IsActive())
+			{
+				IManagedBullet current = bullet;
+				Vector3 viewPortPos = m_MainCamera.WorldToViewportPoint(bullet.Position);
+				if (viewPortPos.x < -0.1f || viewPortPos.x > 1.1f || viewPortPos.y < -0.1f || viewPortPos.y > 1.1f)
+				{
+					current.Disable();
+				}
+			}
+		}
+	}
+
+    #region Public API
+    public void Reset()
     {
         //No need to destroy objects in the pool. Just set them as inactive.
         foreach (var enemy in m_EnemyBulletPool)
@@ -69,9 +89,10 @@ public class BulletManager : MonoBehaviour
 
 		for (int bulletID = 0; bulletID < m_EnemyBulletPool.Length; bulletID++)
 		{
-			if (m_EnemyBulletPool[bulletID] != null &&
-				m_EnemyBulletPool[bulletID] is T &&
-				m_EnemyBulletPool[bulletID].IsAvailable())
+			IManagedBullet current = m_EnemyBulletPool[bulletID];
+			if (current != null &&
+				current is T &&
+				!current.IsActive())
 			{
 				bulletAllocation[numberAllocated++] = (T)m_EnemyBulletPool[bulletID];
 				if (numberAllocated == numberOfBullets)
@@ -95,6 +116,9 @@ public class BulletManager : MonoBehaviour
 				break;
 			case var p when p == typeof(EnemyShot):
 				prefabToInsantiate = ShotPrefab;
+				break;
+			case var p when p == typeof(SuperBullet):
+				prefabToInsantiate = SuperBulletPrefab;
 				break;
             default:
 				throw new System.NotSupportedException("This type is not supported within the pool.");
