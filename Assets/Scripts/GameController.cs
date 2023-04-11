@@ -23,26 +23,26 @@ public class GameController : Singleton<GameController>
 
 	public Rect SpawnArea;
 
-	public GameObject PlayerRef;
+	public Player PlayerRef;
 	public GameObject HowToPlayRef;
 	public GameObject LogoRef;
-	public Text ScoreText;
-	public Text PrevScoreText;
 	public GameObject HighScoreRef;
 	public GameObject ShieldMeterRef;
 
 	public Vector3 shieldMeterFullSize;
 	public Vector3 shieldMeterDefaultPosition;
+
+	public HudUI HudRef;
 	#endregion
 
-#region Private member variables.
+	#region Private member variables.
 	private int m_Score;
 	private int m_HighScore;
 
 	private Player m_PlayerScript;
 
 	private float m_NextSpawnTime;
-#endregion
+	#endregion
 
 	private BulletManager m_BulletManager;
 
@@ -76,14 +76,20 @@ public class GameController : Singleton<GameController>
 		m_PlayerScript.Init(m_BulletManager);
 
 		//Start the player dead and the logo visible.
-		PlayerRef.SetActive(false);
-		PlayerRef.GetComponent<Player>().HitRegisteredEventHandler += ScoreHit;
+		PlayerRef.gameObject.SetActive(false);
+		PlayerRef.HitRegisteredEventHandler += ScoreHit;
+		PlayerRef.PlayerDeathEventHandler += OnPlayerDeath;
+
+
 
 		shieldMeterFullSize = ShieldMeterRef.transform.localScale;
 		shieldMeterDefaultPosition = ShieldMeterRef.transform.position;
 
 		m_HighScore = -1;
 		m_Score = -1;
+
+		HudRef.Score.visible = false;
+		HudRef.PrevScore.visible = false;
 	}
 
 	/// <summary>
@@ -98,6 +104,9 @@ public class GameController : Singleton<GameController>
 		ShieldMeterRef.transform.position = shieldMeterDefaultPosition;
 
 		m_BulletManager.enabled = true;
+		HudRef.Score.visible = true;
+		HudRef.PrevScore.visible = false;
+		LogoRef.GetComponent<Renderer>().enabled = false;
 	}
 
 	/// <summary>
@@ -113,10 +122,8 @@ public class GameController : Singleton<GameController>
 		}
 
 		//Is player alive?
-		if (PlayerRef.activeSelf)
+		if (PlayerRef.gameObject.activeSelf)
 		{
-			SetOverlayVisibility(false);
-
 			//Shield animation and status.
 			if (!m_PlayerScript.ShieldActive)
 			{
@@ -134,16 +141,12 @@ public class GameController : Singleton<GameController>
 				ShieldMeterRef.GetComponent<Renderer>().material.color = new Color(0.0f, 1.0f, 0.0f);
 			}
 
-			ScoreText.text = m_Score.ToString();
+			HudRef.Score.text = m_Score.ToString();
 
 			SpawnEnemies();
 		}
 		else
 		{
-			//Show the start screen.
-			m_HighScore = Mathf.Max(m_Score, m_HighScore);
-			SetOverlayVisibility(true);
-
 #if UNITY_ANDROID
 			if ( Input.GetMouseButtonDown( 0 ) )
 #else
@@ -152,41 +155,6 @@ public class GameController : Singleton<GameController>
 			{
 				ResetGame();
 			}
-		}
-	}
-
-	/// <summary>
-	/// Sets whether or not we can see the start screen assets or not. Shows/Hides the game logo as well as the last game's score and the current high score.
-	/// </summary>
-	/// <param name="isVisable">If set to <c>true</c> is visable.</param>
-	private void SetOverlayVisibility(bool isVisable)
-	{
-		//Start screen asssets and game UI should be mutually exclusive.
-		LogoRef.GetComponent<Renderer>().enabled = isVisable;
-		HowToPlayRef.SetActive(isVisable);
-
-		ScoreText.gameObject.SetActive(!isVisable);
-		ShieldMeterRef.SetActive(!isVisable);
-
-		//Only show the rest of the detils we we have them.
-		if (m_Score != -1)
-		{
-			PrevScoreText.text = PreviousScoreText + m_Score.ToString();
-			PrevScoreText.enabled = isVisable;
-		}
-		else
-		{
-			PrevScoreText.enabled = false;
-		}
-
-		if (m_HighScore != -1)
-		{
-			PrevScoreText.text = HighScoreText + m_HighScore.ToString();
-			PrevScoreText.enabled = isVisable;
-		}
-		else
-		{
-			PrevScoreText.enabled = false;
 		}
 	}
 
@@ -215,11 +183,30 @@ public class GameController : Singleton<GameController>
 	private void ScoreHit()
 	{
 		//Check here because other wise player can score with bullets that are loose after death.
-		if (PlayerRef.activeSelf)
+		if (PlayerRef.gameObject.activeSelf)
 		{
 			m_Score++;
 		}
 	}
+
+	private void OnPlayerDeath()
+	{
+		SoundManager.Instance.Lose();
+		LogoRef.GetComponent<Renderer>().enabled = true;
+
+		if (m_Score > m_HighScore)
+        {
+			m_HighScore = m_Score;
+			HudRef.PrevScore.text = HighScoreText + m_HighScore.ToString();
+        }
+		else
+        {
+			HudRef.PrevScore.text = PreviousScoreText + m_Score.ToString();
+		}
+
+		HudRef.PrevScore.visible = true;
+	}
+
 
 	public void OnDrawGizmos()
 	{

@@ -25,6 +25,7 @@ public class Player : MonoBehaviour
 	public Bullet SuperShotPrefab;
 
 	public event Action HitRegisteredEventHandler;
+	public event Action PlayerDeathEventHandler;
 	#endregion
 
 	private BulletManager m_BulletManager;
@@ -188,9 +189,9 @@ public class Player : MonoBehaviour
             }
             else
             {
-                SoundManager.Instance.Lose();
+				PlayerDeathEventHandler?.Invoke();
                 gameObject.SetActive(false);
-            }
+			}
         }
     }
 
