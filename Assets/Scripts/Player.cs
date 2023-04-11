@@ -143,14 +143,16 @@ public class Player : MonoBehaviour
 		int numToSpawn = Mathf.CeilToInt( SuperShotRatio * ( transform.localScale.x / m_SpawnScale.x ) );
 		float playerWidth = GetComponent<SpriteRenderer>().bounds.size.x;
 		float xSeparation = playerWidth / numToSpawn;
+		float halfSeparation = xSeparation / 2.0f;
+		float halfWidth = playerWidth / 2.0f;
 
+		Vector3 basePosition = transform.position;
+		basePosition.x -= halfWidth + halfSeparation;
 		SuperBullet[] superBullets = m_BulletManager.RequestBulletsFromPool<SuperBullet>(numToSpawn);
-		for (int i = 0; i < numToSpawn; i++)
+		foreach(var bullet in superBullets)
 		{
-			SuperBullet currentBullet = superBullets[i];
-			Vector3 position = transform.position;
-			position.x = position.x - (playerWidth * 0.5f) + (i * xSeparation);
-			currentBullet.transform.SetPositionAndRotation(position, transform.rotation);
+			basePosition.x += xSeparation;
+			bullet.Reinit(basePosition, transform.rotation);
 		}
 		
 		SoundManager.Instance.SuperShot();
@@ -177,23 +179,20 @@ public class Player : MonoBehaviour
 	/// <param name="coll">The collider object of the game object that the player has collided with.</param>
 	private void OnTriggerEnter2D(Collider2D coll)
 	{
-		//TEMP: Comment out the player collision code for testing.
-
-
-		//if (coll.CompareTag("EnemyBullet"))
-		//{
-		//	if (m_ShieldActive)
-		//	{
-		//		SetShieldActive(false);
-		//		coll.gameObject.SetActive(false);
-		//	}
-		//	else
-		//	{
-		//		SoundManager.Instance.Lose();
-		//		gameObject.SetActive(false);
-		//	}
-		//}
-	}
+        if (coll.CompareTag("EnemyBullet"))
+        {
+            if (m_ShieldActive)
+            {
+                SetShieldActive(false);
+                coll.gameObject.SetActive(false);
+            }
+            else
+            {
+                SoundManager.Instance.Lose();
+                gameObject.SetActive(false);
+            }
+        }
+    }
 
 	/// <summary>
 	/// Function to set the status of the players shields.

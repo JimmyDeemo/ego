@@ -10343,10 +10343,10 @@ MonoBehaviour:
   ShotgunChancePercentage: 0.5
   ShotgunSpread: 3
   PulseSpread: 110
-  MinEnemySpawnRate: 0.1
-  MaxEnemySpawnRate: 0.2
+  MinEnemySpawnRate: 0.3
+  MaxEnemySpawnRate: 0.5
   MinEnemySpeed: 2
-  MaxEnemySpeed: 3
+  MaxEnemySpeed: 4
   PreviousScoreText: 'Score last game: '
   HighScoreText: 'Highest Score: '
   EnemyPrefabs:

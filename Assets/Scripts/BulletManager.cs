@@ -50,7 +50,7 @@ public class BulletManager : MonoBehaviour
 			{
 				IManagedBullet current = bullet;
 				Vector3 viewPortPos = m_MainCamera.WorldToViewportPoint(bullet.Position);
-				if (viewPortPos.x < -0.1f || viewPortPos.x > 1.1f || viewPortPos.y < -0.1f || viewPortPos.y > 1.1f)
+				if (viewPortPos.x < -0.05f || viewPortPos.x > 1.05f || viewPortPos.y < -0.05f || viewPortPos.y > 1.05f)
 				{
 					current.Disable();
 				}
